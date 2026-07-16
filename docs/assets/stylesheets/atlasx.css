@@ -1,0 +1,85 @@
+/* AtlasXomics brand styling — mirrors barcodeqc report.css
+   (Poppins, #225789 primary, rounded panels, soft shadows). */
+
+:root {
+  /* Brand palette from report.css */
+  --atx-accent:        #225789;
+  --atx-accent-light:  #2f6ca8;
+  --atx-accent-dark:   #1b4670;
+  --atx-ink:           #1f2937;
+  --atx-sub:           #6b7280;
+  --atx-border:        #e5e7eb;
+  --atx-muted:         #f8fafc;
+  --atx-shadow:        0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.06);
+
+  /* Map onto Material's theme variables */
+  --md-primary-fg-color:        var(--atx-accent);
+  --md-primary-fg-color--light: var(--atx-accent-light);
+  --md-primary-fg-color--dark:  var(--atx-accent-dark);
+  --md-accent-fg-color:         var(--atx-accent-light);
+  --md-typeset-a-color:         var(--atx-accent);
+}
+
+/* Headings: tighter tracking / bold, matching report.css */
+.md-typeset h1 { font-weight: 700; letter-spacing: -0.2px; }
+.md-typeset h2 { font-weight: 600; letter-spacing: -0.1px; }
+
+/* Tables: rounded, bordered, zebra rows, panel background */
+.md-typeset table:not([class]) {
+  border: 1px solid var(--atx-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--atx-shadow);
+  font-size: 0.78rem;
+}
+.md-typeset table:not([class]) th {
+  background: var(--atx-accent);
+  color: #fff;
+  font-weight: 600;
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  color: #fff;
+}
+.md-typeset table:not([class]) tr:nth-child(even) td {
+  background: var(--atx-muted);
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* "grid cards" on the landing page: rounded panels with soft shadow */
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > :is(ul, ol) > li {
+  border: 1px solid var(--atx-border);
+  border-radius: 12px;
+  box-shadow: var(--atx-shadow);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--atx-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 87, 137, 0.18);
+}
+
+/* Admonition accent tint to brand */
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 10px;
+  box-shadow: var(--atx-shadow);
+}
+
+/* Code fences: rounded to match panels */
+.md-typeset pre > code { border-radius: 10px; }
+
+/* Mermaid diagrams: scale to fit the content width in a bordered panel. */
+.md-typeset .mermaid {
+  text-align: center;
+  border: 1px solid var(--atx-border);
+  border-radius: 12px;
+  box-shadow: var(--atx-shadow);
+  padding: 12px;
+}
+.md-typeset .mermaid > svg {
+  max-width: 100%;
+  height: auto;
+}

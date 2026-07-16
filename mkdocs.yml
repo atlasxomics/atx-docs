@@ -1,0 +1,103 @@
+site_name: AtlasXomics Documentation
+site_description: End-to-end documentation for the AtlasXomics spatial-omics data processing platform.
+site_author: AtlasXomics Inc.
+site_url: https://atlasxomics.readthedocs.io/
+repo_url: https://github.com/atlasxomics
+copyright: Copyright &copy; AtlasXomics, Inc.
+
+theme:
+  name: material
+  logo: assets/x-grey.png
+  favicon: assets/x.png
+  font:
+    text: Poppins
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+extra_css:
+  - assets/stylesheets/atlasx.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js
+  - assets/javascripts/mermaid-init.js
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Platform Overview: getting-started/platform-overview.md
+      - Data Organization: getting-started/data-organization.md
+      - Tutorials: getting-started/tutorials.md
+  - Epigenomics:
+      - Overview: epigenomics/index.md
+      - Preprocessing: epigenomics/preprocessing.md
+      - Optimization - optimize archr: epigenomics/optimize-archr.md
+      - Optimization - optimize_snap: epigenomics/optimize-snap.md
+      - Secondary Analysis - create ArchRProject: epigenomics/create-archrproject.md
+      - Secondary Analysis - ATX_snap: epigenomics/atx-snap.md
+      - Plots: epigenomics/plots.md
+      - Helper - atx_convert: epigenomics/helpers/atx-convert.md
+      - Helper - ATX impute: epigenomics/helpers/impute.md
+      - Helper - clean: epigenomics/helpers/clean.md
+      - Helper - fragment fixer: epigenomics/helpers/fragment-fixer.md
+      - Advanced - compare clusters: epigenomics/compare-clusters.md
+  - Whole Transcriptome:
+      - Overview: transcriptome/index.md
+      - QC - RNAQC: transcriptome/rnaqc.md
+      - Secondary Analysis - optimize_wt: transcriptome/optimize-wt.md
+      - Plots: transcriptome/plots.md
+  - Co-Profiling:
+      - Overview: coprofiling/index.md
+      - atx_glue: coprofiling/atx-glue.md
+      - Plots: coprofiling/plots.md
+  - Utils:
+      - Overview: utils/index.md
+      - downsample reads: utils/downsample.md
+      - ftp downloader: utils/ftp-downloader.md
+      - merge fastq: utils/merge-fastq.md
+  - Tools:
+      - AtlasXBrowser: tools/atlasxbrowser.md
+      - BarcodeQC: tools/barcodeqc.md
+      - DIY / Local Processing: tools/diy.md
+  - Reference:
+      - Glossary: reference/glossary.md
+      - Bibliography: reference/bibliography.md
