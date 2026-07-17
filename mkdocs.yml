@@ -82,7 +82,7 @@ nav:
       - Advanced - compare clusters: epigenomics/compare-clusters.md
   - Whole Transcriptome:
       - Overview: transcriptome/index.md
-      - QC - RNAQC: transcriptome/rnaqc.md
+      - Preprocessing - RNAQC: transcriptome/rnaqc.md
       - Secondary Analysis - optimize_wt: transcriptome/optimize-wt.md
       - Plots: transcriptome/plots.md
   - Co-Profiling:
