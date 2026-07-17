@@ -1,0 +1,17 @@
+# Read the Docs configuration file for the AtlasXomics MkDocs site.
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html
+version: 2
+
+build:
+  os: ubuntu-24.04
+  tools:
+    python: "3.12"
+
+# Build the site with MkDocs using the project's mkdocs.yml.
+mkdocs:
+  configuration: mkdocs.yml
+
+# Install the docs dependencies (MkDocs, Material theme, pymdown-extensions).
+python:
+  install:
+    - requirements: requirements.txt
