@@ -37,8 +37,26 @@ Workflow converts it to the complementary format.
 
 ## Outputs
 
-A `LatchDir` under `latch:///converted/<output_directory>/` containing the
-converted object (and, when requested, `converted_sm.h5ad`).
+A `LatchDir` under `latch:///converted/<output_directory>/`. Which files appear
+depends on the conversion direction:
+
+```text
+converted/<output_directory>/
+├── converted.h5ad  or  converted.rds        # per conversion direction
+├── converted_sm.h5ad                        # when "Convert to _sm"
+├── converted_bp.h5ad, converted_bp_sm.h5ad  # BPCells source
+├── obs.csv
+├── metadata.csv
+└── reductions.txt
+```
+
+| File | Description |
+|---|---|
+| `converted.h5ad` | AnnData produced from a Seurat or BPCells source. |
+| `converted.rds` | Seurat object produced from an AnnData source. |
+| `converted_sm.h5ad` | Reduced "`_sm`" AnnData — only when **Convert to `_sm`** is enabled. |
+| `converted_bp.h5ad` / `converted_bp_sm.h5ad` | AnnData (and reduced variant) produced from a BPCells directory. |
+| `obs.csv`, `metadata.csv`, `reductions.txt` | Cell metadata, object metadata, and the dimensionality-reduction names carried across. |
 
 ## Example run
 

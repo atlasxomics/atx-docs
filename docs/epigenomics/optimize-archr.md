@@ -5,6 +5,28 @@
     **Display name:** optimize archr ·
     **Modality:** Epigenomics · **Stage:** Optimization
 
+```mermaid
+flowchart LR
+    PREP["prepare_archr_task<br/>shared ArchRProject"]:::process
+    BUILD["build_archr_opt_jobs_task<br/>enumerate parameter sets"]:::process
+    SET1["archr_opt_set_task<br/>set 1"]:::process
+    SET2["archr_opt_set_task<br/>set 2"]:::process
+    SETN["archr_opt_set_task<br/>set N"]:::process
+    AGG["aggregate_archr_task<br/>galleries + comparison"]:::process
+
+    PREP --> BUILD
+    BUILD --> SET1 & SET2 & SETN
+    SET1 & SET2 & SETN --> AGG
+    PREP -. base project .-> AGG
+
+    classDef process stroke:#818cf8,fill:#eef2ff
+```
+
+<p style="text-align:center;font-size:0.75rem;opacity:0.7;margin-top:-0.5rem">
+Workflow task DAG — the shared project is prepared once, parameter sets fan out
+in parallel, then results are aggregated.
+</p>
+
 ## Overview
 
 **optimize archr** is a [Latch](https://latch.bio/) Workflow for assessing
@@ -90,6 +112,19 @@ parallel**.
 ## Outputs
 
 Written to `latch:///optimize_outs/<project_name>/`.
+
+```text
+optimize_outs/<project_name>/
+├── medians.csv                     # per-run QC medians
+├── figures/
+│   ├── umap_plots_<NNN>.png        # one page per parameter set
+│   ├── spatialdim_plots_<NNN>.png
+│   ├── qc_plots_<NNN>.png
+│   └── *.html                      # browsable galleries
+├── cluster_csvs/
+│   └── *_bc-clusters.csv           # barcode → cluster, per set
+└── _intermediate/                  # shared base ArchRProject + per-set outputs
+```
 
 | Path | Description |
 |---|---|

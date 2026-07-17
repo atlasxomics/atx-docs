@@ -5,6 +5,27 @@
     **Display name:** ATX epigenomic preprocessing ·
     **Modality:** Epigenomics · **Stage:** Preprocessing
 
+```mermaid
+flowchart LR
+    FILT["filtering<br/>linker filtering (bbduk)"]:::process
+    ALIGN["alignment<br/>Chromap → fragments file"]:::process
+    METRICS["metrics_task<br/>fragment metrics + report"]:::process
+    STATS["statistics<br/>summary stats + peaks"]:::process
+
+    FILT --> ALIGN
+    ALIGN --> METRICS
+    ALIGN --> STATS
+    FILT -. filtered reads .-> STATS
+
+    classDef process stroke:#818cf8,fill:#eef2ff
+```
+
+<p style="text-align:center;font-size:0.75rem;opacity:0.7;margin-top:-0.5rem">
+Workflow task DAG — reads are linker-filtered, aligned into a fragments file,
+then summarized by the metrics and statistics tasks. (Internal Registry/SLIMS
+upload tasks omitted.)
+</p>
+
 ## Overview
 
 The ATX epigenomic preprocessing Workflow takes raw spatial ATAC-seq / CUT&Tag
@@ -31,7 +52,8 @@ and feeds the [optimization](optimize-archr.md) and
    skipped independently). Supports optional
    [cleaning](../reference/glossary.md#cleaning) /
    [cross-talk correction](../reference/glossary.md#cross-talk-correction) and
-   bulk / no-ligation-bulk modes.
+   [bulk](../reference/glossary.md#bulk-mode) /
+   [no-ligation-bulk](../reference/glossary.md#no-ligation-bulk-mode) modes.
 2. **`alignment`** — Align filtered read pairs with
    [Chromap](https://github.com/haowenz/chromap), assigning barcodes from read 2,
    and build a fragments file. Post-processing suffixes barcodes with `-1`,
@@ -64,7 +86,7 @@ and feeds the [optimization](optimize-archr.md) and
 | `species` | LatchDir | Chromap genome reference directory. |
 | `barcode_file` | enum | Barcode whitelist / schema. |
 | `peak_calling` | bool | Perform peak calling during QC. |
-| `bulk`, `noLigation_bulk` | bool | Bulk processing modes. |
+| `bulk`, `noLigation_bulk` | bool | [Bulk](../reference/glossary.md#bulk-mode) / [no-ligation-bulk](../reference/glossary.md#no-ligation-bulk-mode) processing modes (non-spatial runs). |
 | `skip1`, `skip2` | bool | Skip linker 1 / linker 2 filtering. |
 | `blacklist_filtering` | bool | Apply blacklist filtering. |
 | `cleaning`, `xtalk_correction` | bool | Apply cleaning / cross-talk correction. |

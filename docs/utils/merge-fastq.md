@@ -36,6 +36,11 @@ a single file per read.
 A single merged `LatchFile` (`<run_id>_merged_R<read>.<ext>`) written to
 `latch:///merged/<output_dir>/`.
 
+```text
+merged/<output_dir>/
+└── <run_id>_merged_R<read>.<ext>
+```
+
 ## Example run
 
 *(Representative LaunchPlan / batch-table example to be added.)*

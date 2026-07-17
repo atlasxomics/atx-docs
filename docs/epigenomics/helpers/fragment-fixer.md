@@ -31,8 +31,17 @@ salvaging Chromap output produced against a mismatched or older genome build.
 
 ## Outputs
 
-The corrected file (`fragments.tsv.gz` or `aln.bed`, per `output_type`) written
-under `latch:///ff_outs/<output_dir>/`.
+A `LatchDir` under `latch:///ff_outs/<output_dir>/` containing the corrected
+file:
+
+```text
+ff_outs/<output_dir>/
+└── <run_id>_ff_aln.bed          # or fragments.tsv.gz, per output_type
+```
+
+| File | Description |
+|---|---|
+| `<run_id>_ff_aln.bed` *or* `<run_id>` fragments `.tsv.gz` | The screened, corrected alignment / fragments file — lines that fall outside the reference genome's chromosome coordinates are removed. The format (`aln.bed` vs `fragments.tsv.gz`) is set by `output_type`. |
 
 ## Example run
 

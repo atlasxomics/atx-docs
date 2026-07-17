@@ -41,8 +41,9 @@ flowchart LR
 
 **Walking the flow:**
 
-1. **Preprocess & QC.** Raw **FASTQ** goes through [RNAQC](rnaqc.md) — read/
-   alignment QC, FastQ screening, and per-cell duplication recovery. As on the
+1. **Preprocess & QC.** Raw **FASTQ** goes through [RNAQC](rnaqc.md) — STARsolo
+   alignment, a MultiQC report, and a FastQ-Screen contamination check —
+   producing the per-run gene-expression matrix. As on the
    epigenomics path, you can optionally run [BarcodeQC](../tools/barcodeqc.md)
    **first** to generate the [cleaning](../reference/glossary.md#cleaning) and
    [cross-talk correction](../reference/glossary.md#cross-talk-correction) tables
@@ -66,6 +67,6 @@ flowchart LR
 
 | Stage | Workflow | Purpose |
 |---|---|---|
-| **QC** | [RNAQC](rnaqc.md) | Quality control and per-cell duplication recovery. |
+| **Preprocessing** | [RNAQC](rnaqc.md) | STARsolo alignment, QC report, and contamination screening. |
 | **Secondary Analysis** | [optimize_wt](optimize-wt.md) | Preprocessing, integration, clustering, and marker genes. |
 | **Plots** | [Transcriptome Plots](plots.md) | Interactive visualization of results. |

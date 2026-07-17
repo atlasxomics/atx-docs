@@ -35,6 +35,11 @@ a workspace. Tested with FTP and HTTPS sources.
 A `LatchDir` containing the downloaded files, written to
 `latch:///downloads/<out_dir>/`. FTP sources download recursively.
 
+```text
+downloads/<out_dir>/
+└── … downloaded files (recursive tree for FTP directories)
+```
+
 ## Example run
 
 *(Representative LaunchPlan / batch-table example to be added.)*

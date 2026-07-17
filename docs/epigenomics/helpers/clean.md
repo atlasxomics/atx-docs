@@ -47,9 +47,21 @@ scATAC-seq packages.
 
 ## Outputs
 
-A `CleaningOutput` per sample — the `run_id` and a `LatchDir` containing the
-cleaned `fragments.tsv.gz` and cleaning summary statistics, under
-`latch:///cleaned/<output_dir>/`.
+A `CleaningOutput` per sample — the `run_id` and a `LatchDir` under
+`latch:///cleaned/<output_dir>/` containing:
+
+```text
+cleaned/<output_dir>/
+├── <fragments>.tsv.gz
+├── <run_id>_cleaning_metrics.csv
+└── singlecell.csv
+```
+
+| File | Description |
+|---|---|
+| `<fragments>.tsv.gz` | The cleaned, sorted, `bgzip`-compressed fragments file (outlier tixels downsampled). |
+| `<run_id>_cleaning_metrics.csv` | Cleaning summary — which rows/columns were flagged as outliers and the downsampling applied. |
+| `singlecell.csv` | Per-barcode single-cell summary after cleaning. |
 
 ## Example run
 

@@ -5,6 +5,27 @@
     **Display name:** optimize_snap ·
     **Modality:** Epigenomics · **Stage:** Optimization
 
+```mermaid
+flowchart LR
+    COMBINE["combine_task<br/>combined AnnData"]:::process
+    BUILD["build_opt_jobs_task<br/>enumerate parameter sets"]:::process
+    SET1["opt_task<br/>set 1"]:::process
+    SET2["opt_task<br/>set 2"]:::process
+    SETN["opt_task<br/>set N"]:::process
+    AGG["aggregate_opt_results_task<br/>comparison plots"]:::process
+
+    COMBINE --> BUILD
+    BUILD --> SET1 & SET2 & SETN
+    SET1 & SET2 & SETN --> AGG
+
+    classDef process stroke:#818cf8,fill:#eef2ff
+```
+
+<p style="text-align:center;font-size:0.75rem;opacity:0.7;margin-top:-0.5rem">
+Workflow task DAG — the combined object is built once, parameter sets fan out in
+parallel, then results are aggregated. (Internal Registry upload omitted.)
+</p>
+
 ## Overview
 
 **optimize_snap** evaluates the quality of an epigenomic
@@ -22,23 +43,33 @@ then each parameter combination is evaluated in parallel.
 
 ## Steps
 
-1. **`combine_task`** — Merge input Runs into a combined AnnData
-   (`combined.h5ad`), add the SnapATAC2 tile matrix
+1. **`combine_task`** — The shared setup, run **once**. Builds a per-Run AnnData
+   for each fragments file, filters cells by minimum fragments (`min_frags`) and
+   minimum TSS enrichment (`min_tss`), adds the SnapATAC2 tile matrix
    ([`pp.add_tile_matrix`](https://kzhang.org/SnapATAC2/api/_autosummary/snapatac2.pp.add_tile_matrix.html),
-   `bin_size = tile_size`), and apply cell filters (min TSS, min fragments).
-   A precomputed object can be supplied via **combined h5ad override**.
-2. **`build_opt_jobs_task`** — Expand the list-valued parameters (`n_features`,
-   `n_comps`, `resolution`, `varfeat_iters`) into the full grid of parameter
-   sets to evaluate.
-3. **`mapper_opt_task`** — For each set (run in parallel): select features
-   ([`pp.select_features`](https://kzhang.org/SnapATAC2/api/_autosummary/snapatac2.pp.select_features.html)),
-   compute spectral embedding
+   `bin_size = tile_size`), merges all Runs into `combined.h5ad`, attaches spatial
+   coordinates, and renders a TSS-enrichment QC plot. Optionally subsamples cells
+   (`subsample_fraction` / `subsample_n_cells` / `subsample_seed`). A precomputed
+   object can be supplied via **combined h5ad override**. Every parameter set
+   reuses this one object.
+2. **`build_opt_jobs_task`** — *(plumbing)* Expands the list-valued parameters
+   (`n_features`, `n_comps`, `resolution`, `varfeat_iters`) into the full grid of
+   parameter sets to evaluate.
+3. **`opt_task`** — The per-set evaluation, **fanned out in parallel** (one task
+   per set via `map_task`). On the shared object it selects features
+   ([`pp.select_features`](https://kzhang.org/SnapATAC2/api/_autosummary/snapatac2.pp.select_features.html),
+   `n_features`), computes the spectral embedding
    ([`tl.spectral`](https://kzhang.org/SnapATAC2/api/_autosummary/snapatac2.tl.spectral.html),
-   `n_comps`), and cluster with Leiden
+   `n_comps`), clusters with Leiden
    ([`tl.leiden`](https://kzhang.org/SnapATAC2/api/_autosummary/snapatac2.tl.leiden.html),
-   `resolution`, `n_iterations = varfeat_iters`, `min_cluster_size`).
-4. **`aggregate_opt_results_task`** — Collect per-set outputs into comparison
-   plots and summary statistics.
+   `resolution`, `n_iterations = varfeat_iters`, `leiden_iters`,
+   `min_cluster_size`), re-attaches spatial coordinates, and writes that set's
+   `combined.h5ad`.
+4. **`aggregate_opt_results_task`** — Collects every set's object and builds the
+   comparison outputs: paginated UMAP embeddings across sets (`all_umaps`),
+   spatial cluster maps (`all_spatialdim`), a spatial QC grid
+   (`n_fragment`, `log10_frags`, TSS enrichment), and per-run QC medians
+   (`medians.csv`), each with a browsable HTML gallery.
 
 ## Inputs
 
@@ -79,9 +110,45 @@ then each parameter combination is evaluated in parallel.
 
 ## Outputs
 
-Per-parameter-set plots and summary statistics written under
-`latch:///snap_opts/<project_name>/`. The Workflow returns no value (results are
-written to Latch Data for review).
+Written to `latch:///snap_opts/<project_name>/`.
+
+```text
+snap_opts/<project_name>/
+├── combined.h5ad
+├── combined_ds.h5ad                # only when subsampling
+├── medians.csv
+├── all_umaps.html                  # browsable galleries
+├── all_spatialdim.html
+├── spatial_qc.html
+├── subsample_info.txt              # only when subsampling
+├── figures/
+│   ├── all_umaps.png
+│   ├── all_spatialdim.png
+│   ├── spatial_qc.png
+│   └── tss_frags.png
+└── _intermediate/                  # shared object + _mapped_sets/<set>/, logs/
+```
+
+| Path | Description |
+|---|---|
+| `combined.h5ad` | The combined AnnData object (tile matrix, cell filters, spatial coordinates). |
+| `combined_ds.h5ad` | Subsampled combined object — only when subsampling is enabled. |
+| `medians.csv` | Per-run QC medians (median fragments per cell, median TSS enrichment). |
+| `figures/all_umaps.png` | UMAP embeddings for every parameter set — one page per set. |
+| `figures/all_spatialdim.png` | Spatial cluster maps for every parameter set. |
+| `figures/spatial_qc.png` | Spatial QC grid (`n_fragment`, `log10_frags`, TSS enrichment) per Run. |
+| `figures/tss_frags.png` | TSS-enrichment vs. fragments QC plot. |
+| `all_umaps.html`, `all_spatialdim.html`, `spatial_qc.html` | Browsable HTML galleries paging through the figures above, for side-by-side comparison of sets. |
+| `subsample_info.txt` | Subsampling summary — only when subsampling is enabled. |
+
+Intermediate artifacts (the shared combined object and each set's `combined.h5ad`)
+are kept under `latch:///snap_opts/<project_name>/_intermediate/` (per-set outputs
+in `_mapped_sets/<set>/`), with performance logs under `logs/`. Use the galleries
+and medians to choose the parameter set to carry into [ATX_snap](atx-snap.md).
+
+!!! note "Internal step"
+    A final `registry_task` writes outputs to the Latch Registry (see
+    [Internal Tasks](../getting-started/platform-overview.md#internal-atx-only-tasks)).
 
 ## Example run
 

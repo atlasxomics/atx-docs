@@ -33,7 +33,20 @@ analysis.
 
 ## Outputs
 
-A `LatchDir` containing the imputed fragments (and associated files) for the run.
+A `LatchDir` under `latch:///impute/<output_directory>/`.
+
+```text
+impute/<output_directory>/
+├── imputed_<fragments>.tsv.gz
+├── tissue_positions_list_clusters.csv
+└── <run_id>_cleaning_metrics.csv
+```
+
+| File | Description |
+|---|---|
+| `imputed_<fragments>.tsv.gz` | The imputed, re-sorted, `bgzip`-compressed fragments file — the missing lanes filled in. |
+| `tissue_positions_list_clusters.csv` | Tissue positions annotated with the per-tixel cluster assignments used to guide imputation. |
+| `<run_id>_cleaning_metrics.csv` | Summary metrics for the imputation. |
 
 ## Example run
 

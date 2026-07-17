@@ -5,16 +5,16 @@ cloud environment for building and running bioinformatics Workflows. This page
 explains the pieces you will encounter throughout the rest of this
 documentation.
 
-## Core concepts
+## Core Latch concepts
 
 | Concept | What it is |
 |---|---|
-| **Workflow** | A versioned, containerized pipeline made up of one or more **Tasks**. Each ATX Workflow corresponds to a GitHub repository under [atlasxomics](https://github.com/atlasxomics). |
-| **Task** | A single step within a Workflow (e.g. filtering, alignment). Tasks are the units the Latch UI displays while a Workflow runs. |
-| **Latch Data** | The Latch file system where inputs and outputs are stored. Remote paths are written as `latch:///...`. |
-| **Plots** | Latch's interactive visualization environment, where ATX plotting apps render Workflow outputs. |
-| **Registry** | A light sample database that is **part of Latch** — stores samples, runs, and metadata alongside your data. |
-| **Pod** | An interactive, customizable cloud compute instance (similar to an EC2 instance) preconfigured with **Jupyter** and **RStudio**. Pods can be used for interactive analysis as well as running tools such as AtlasXBrowser. See the [Latch documentation on Pods](https://wiki.latch.bio/). |
+| [**Workflow**](https://wiki.latch.bio/workflows/overview) | A versioned, containerized pipeline made up of one or more **Tasks**. Each ATX Workflow corresponds to a GitHub repository under [atlasxomics](https://github.com/atlasxomics). |
+| [**Task**](https://wiki.latch.bio/workflows/overview) | A single step within a Workflow (e.g. filtering, alignment). Tasks are the units the Latch UI displays while a Workflow runs. |
+| [**Latch Data**](https://wiki.latch.bio/wiki/data/overview) | The Latch file system where inputs and outputs are stored. Remote paths are written as `latch:///...`. |
+| [**Plots**](https://wiki.latch.bio/plots/overview) | Latch's interactive visualization environment, where ATX plotting apps render Workflow outputs. |
+| [**Registry**](https://docs.latch.bio/registry/overview.html) | A light sample database that is **part of Latch** — stores samples, runs, and metadata alongside your data. |
+| [**Pod**](https://wiki.latch.bio/wiki/pods/overview) | An interactive, customizable cloud compute instance (similar to an EC2 instance) preconfigured with **Jupyter** and **RStudio**. Pods can be used for interactive analysis as well as running tools such as AtlasXBrowser. |
 
 ## Processing stages
 
@@ -29,7 +29,7 @@ overall shape. We use consistent stage names throughout this documentation:
 3. **Secondary analysis** — post-alignment processing that moves aligned data
    toward more meaningful context: gene accessibility, peak calling, and motif
    deviations (epigenomic), clustering, cell typing, and spatial analysis, plus
-   generation of objects (ArchRProject, AnnData) for downstream work.
+   generation of objects (ArchRProject, AnnData, Seurat) for downstream work.
 4. **Plots** — interactive visualization of the results.
 
 ## The `run_id` convention
@@ -65,5 +65,6 @@ In ATX parlance, tissue-samples analyzed via DBiT-seq are termed **"Runs"**.
 
 - Browse the [Tutorials](tutorials.md) for guided, click-through walkthroughs.
 - Each Workflow page links to its source repository on
-  [GitHub](https://github.com/atlasxomics).
+  [GitHub](https://github.com/atlasxomics). Some Workflows are private; please contact support@atlasxomics.com for access.
 - Unfamiliar terms are defined in the [Glossary](../reference/glossary.md).
+- Contact support@atlasxomics.com with questions and concerns. 

@@ -66,7 +66,7 @@ locally. We also provide guidance for **"DIY"** processing on a local machine.
 
 For detailed, click-through tutorials on running Workflows and tools in Latch for
 ATX data, see our Scribe collection:
-**[AtlasXomics / LatchBio Tutorials](https://scribehow.com/o/01jzlMHMRV-kYMeF_qMl2Q/page/AtlasXomics_LatchBio_Tutorials__yUhN8xU7TrOmEcrhks-n3A?referrer=documents)**.
+**[AtlasXomics / LatchBio Tutorials](https://scribehow.com/o/01jzlMHMRV-kYMeF_qMI2Q/page/AtlasXomics_LatchBio_Tutorials__yUhN8xU7TrOmEcrhks-n3A?referrer=documents)**.
 
 ---
 

@@ -8,6 +8,7 @@ cloud, ATX provides open-source tools that mirror the cloud Workflows.
 | Tool | Repository | Purpose |
 |---|---|---|
 | **ATX_epigenomics** | [atlasxomics/ATX_epigenomics](https://github.com/atlasxomics/ATX_epigenomics) | Local epigenomics preprocessing / analysis. |
-| **Barcode QC CLI** | [atlasxomics/barcodeqc](https://github.com/atlasxomics/barcodeqc) | Local barcode quality control. |
+| **Barcode QC CLI** | [atlasxomics/barcodeqc](https://github.com/atlasxomics/barcodeqc) | Local barcode quality control (the CLI form of [BarcodeQC](barcodeqc.md)). |
 
-*(Add installation, dependency, and step-by-step local-run guidance here.)*
+Installation and step-by-step run instructions live in each tool's repository
+README. *(Detailed local-run walkthroughs to be added here.)*

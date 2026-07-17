@@ -34,6 +34,12 @@ FASTQ.
 A tuple of two `LatchFile`s — the downsampled `ds_<r1>` and `ds_<r2>` — written
 to `latch:///downsampled/<out_dir>/`.
 
+```text
+downsampled/<out_dir>/
+├── ds_<r1>
+└── ds_<r2>
+```
+
 ## Example run
 
 ```python

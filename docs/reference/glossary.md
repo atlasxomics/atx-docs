@@ -26,6 +26,21 @@ Terms that are obscure or specific to AtlasXomics.
 **tixel**
 : A "tissue pixel" — one spatial barcode location on the DBiT-seq grid.
 
+<a id="bulk-mode"></a>
+**bulk (mode)**
+: A [preprocessing](../epigenomics/preprocessing.md) mode for **non-spatial
+  (bulk) ATAC-seq** runs. When enabled, the spatial barcode sequences in reads
+  are replaced with **random barcodes**, so the run is processed as a single
+  bulk sample rather than resolved into [tixels](#tixel). Enabled via the `bulk`
+  toggle; AtlasXomics preprocessing supports both `spatial` and `bulk` run types.
+
+<a id="no-ligation-bulk-mode"></a>
+**no-ligation-bulk (mode)**
+: A [bulk](#bulk-mode) preprocessing mode for libraries prepared **without the
+  ligation-linker step**. Before alignment, reads have the expected linker
+  sequences **added** and random barcodes assigned. Enabled via the
+  `noLigation_bulk` toggle.
+
 **cross-talk**
 : In DBiT-seq, spatial barcodes are delivered through microfluidic channels
   (one set of channels for rows, another for columns). **Cross-talk** is
