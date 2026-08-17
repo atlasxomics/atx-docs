@@ -1,8 +1,7 @@
 # Customer Data Organization
 
 This page describes how data is organized within **Customer Workspaces** on
-Latch. It is specific to customer-facing workspaces and does not describe ATX
-internal storage.
+Latch.
 
 Workspaces are organized **by Workflow output**: each top-level directory holds
 the results of one Workflow, and within it each project or run gets its own
@@ -39,14 +38,14 @@ produced with ArchR.
 | `spatials/` | [AtlasXBrowser](tools/atlasxbrowser.md) | The [Spatial folder](reference/glossary.md#spatial-folder) per run — tissue images, `tissue_positions_list.csv`, and metadata. |
 | `fastq2frags/` | [ATX epigenomic preprocessing](epigenomics/preprocessing.md) | Filtered FASTQs, Chromap alignment, the **fragments file**, and QC metrics/reports. |
 | `cram2frags/` | `cram2frag_wf` | Fragments produced from CRAM input rather than FASTQ. |
-| `atac_optimize_archr/` | [optimize archr](epigenomics/optimize-archr.md) | Parameter-sweep comparison figures, galleries, and cluster tables. |
-| `atac_optimize_snap/` | [optimize_snap](epigenomics/optimize-snap.md) | Parameter-sweep comparison figures and QC medians (SnapATAC2). |
-| `atac_analysis_archr/` | [create ArchRProject](epigenomics/create-archrproject.md) | The ArchRProject, Seurat/AnnData objects, coverage tracks, peak BEDs, and analysis tables. |
-| `atac_analysis_snap/` | [ATX_snap](epigenomics/atx-snap.md) | Combined AnnData, gene-accessibility and motif results, and analysis tables. |
-| `compare_outs/` | [compare clusters](epigenomics/compare-clusters.md) | Differential gene, peak, and motif results between two groups. |
+| `atac_optimize_archr/` | [optimize archr](epigenomics/optimize-archr.md) | Parameter-sweep comparison figures and metrics (ArchR). |
+| `atac_optimize_snap/` | [optimize_snap](epigenomics/optimize-snap.md) | Parameter-sweep comparison figures and metrics (SnapATAC2). |
+| `atac_analysis_archr/` | [create ArchRProject](epigenomics/create-archrproject.md) | The ArchRProject, Seurat/AnnData objects, coverage tracks, peak BEDs, and analysis tables from ArchR. |
+| `atac_analysis_snap/` | [ATX_snap](epigenomics/atx-snap.md) | Combined AnnData, gene-accessibility and motif results, and analysis tables from SnapATAC and ArchR. |
+| `compare_outs/` | [compare clusters](epigenomics/compare-clusters.md) | Differential gene, peak, and motif results between user-specified groups. |
 | `rna_preprocessing/` | [RNAQC](transcriptome/rnaqc.md) | STARsolo alignment, the gene-expression matrix, MultiQC report, and contamination screen. |
 | `rna_analysis/` | [optimize_wt](transcriptome/optimize-wt.md) | Clustered AnnData, marker genes, spatially variable genes, and figures. |
-| `copro_integration_analysis/` | [atx_glue](coprofiling/atx-glue.md) | SpatialGlue-integrated objects, coverage tracks, and peak-to-gene links. |
+| `copro_integration_analysis/` | [atx_glue](coprofiling/atx-glue.md) | SpatialGlue-integrated objects, coverage tracks, peak-to-gene links, correlation results. |
 
 !!! note "Raw FASTQs are not delivered by default"
     Instead of raw sequencing reads, workspaces receive the **filtered FASTQs**
@@ -73,29 +72,7 @@ fastq2frags/
     └── pycistopic_metrics/             # summary statistics and peaks
 ```
 
-The most-used files — the fragments file, the QC report, and the coverage track
-— are copied to the top of the run folder so they can be found without digging
-through subfolders. See each Workflow's **Outputs** section for the full
-contents of its directory.
-
-## Directory renames
-
-Customer-facing directories were renamed to make the modality and stage obvious
-to users new to the platform. If you have older results, scripts, or bookmarks,
-use this mapping:
-
-| Old name | New name |
-|---|---|
-| `chromap_outputs/` | `fastq2frags/` |
-| `optimize_outs/` | `atac_optimize_archr/` |
-| `snap_opts/` | `atac_optimize_snap/` |
-| `ArchRProject/` | `atac_analysis_archr/` |
-| `snap_outs/` | `atac_analysis_snap/` |
-| `rnaSeqQC_output/` | `rna_preprocessing/` |
-| `wt_opts/` | `rna_analysis/` |
-| `glue_outs/` | `copro_integration_analysis/` |
-
-`compare_outs/`, `spatials/`, and `cram2frags/` are unchanged.
+See each Workflow's **Outputs** section for the full contents of its directory.
 
 ??? note "Old structure (superseded)"
     Earlier Customer Workspaces grouped data by processing stage rather than by
@@ -104,6 +81,6 @@ use this mapping:
 
     | Folder | Contents |
     |---|---|
-    | **`Raw_Data`** | Raw FASTQ files. |
+    | **`Raw_Data`** | Raw FASTQ files, spatial folders, preprocessing outputs for [ATAC](epigenomics/preprocessing.md#outputs) and [RNA](transcriptome/rnaqc#outputs). |
     | **`Processed_Data`** | Outputs from the secondary processing pipeline. |
-    | **`Optimized_Data`** | Outputs of optimization Workflows. |
+    | **`Optimized_Data`** | Preprocessing results from shallow-sequenced optimization experiments (usually bulks).  |
