@@ -47,7 +47,7 @@ locally. We also provide guidance for [**"DIY"**](tools/diy.md) processing on a 
 Every modality (Epigenomics, Whole Transcriptome, Co-Profiling) follows the same
 overall shape. We use consistent stage names throughout this documentation:
 
-1. **Preprocessing / QC** — *primary analysis*: alignment and QC of FASTQ files,
+1. **Preprocessing / QC** — alignment and QC of FASTQ files,
    and processing of image data.
 2. **Optimization** — parameter sweeps that evaluate multiple
    dimensionality-reduction / clustering settings in parallel to inform final
