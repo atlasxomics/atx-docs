@@ -98,22 +98,38 @@ Terms that are obscure or specific to AtlasXomics.
 : The [ArchR](https://www.archrproject.com/) analysis object bundling fragments,
   QC, dimensionality reduction, and clustering for a set of Runs.
 
-**Registry**
+## Latch platform concepts
+
+The AtlasXomics platform is built on top of **[LatchBio](https://latch.bio/)**, a
+cloud environment for building and running bioinformatics Workflows. These are
+the Latch pieces you will encounter throughout this documentation.
+
+**[Workflow](https://wiki.latch.bio/workflows/overview)**
+: A versioned, containerized pipeline made up of one or more **Tasks**. Each ATX
+  Workflow corresponds to a GitHub repository under
+  [atlasxomics](https://github.com/atlasxomics).
+
+**[Task](https://wiki.latch.bio/workflows/overview)**
+: A single step within a Workflow (e.g. filtering, alignment). Tasks are the
+  units the Latch UI displays while a Workflow runs.
+
+**[Latch Data](https://wiki.latch.bio/wiki/data/overview)**
+: The Latch file system where inputs and outputs are stored; remote paths use
+  the `latch:///` scheme.
+
+**[Plots](https://wiki.latch.bio/plots/overview)**
+: Latch's interactive visualization environment, where ATX plotting apps render
+  Workflow outputs.
+
+**[Registry](https://docs.latch.bio/registry/overview.html)**
 : A light sample database that is **part of Latch**, storing samples, runs, and
   metadata alongside your data.
+
+**[Pod](https://wiki.latch.bio/wiki/pods/overview)**
+: An interactive, customizable Latch cloud compute instance (similar to an EC2
+  instance) preconfigured with Jupyter and RStudio, used for analysis and for
+  running interactive tools such as AtlasXBrowser.
 
 **SLIMS**
 : AtlasXomics' internal LIMS platform — **separate from Latch** and used for ATX
   operations only. The *"Upload to SLIMS"* toggle is ATX-internal.
-
-**Latch Data**
-: The Latch file system where inputs and outputs are stored; remote paths use
-  the `latch:///` scheme.
-
-**Plots**
-: Latch's interactive visualization environment, where ATX plotting apps render.
-
-**Pod**
-: An interactive, customizable Latch cloud compute instance (similar to an EC2
-  instance) preconfigured with Jupyter and RStudio, used for analysis and for
-  running interactive tools such as AtlasXBrowser.

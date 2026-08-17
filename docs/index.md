@@ -44,12 +44,25 @@ locally. We also provide guidance for [**"DIY"**](tools/diy.md) processing on a 
  Co-Profiling (optional)   (epigenome × transcriptome)
 ```
 
+## Processing stages
+
+Every modality (Epigenomics, Whole Transcriptome, Co-Profiling) follows the same
+overall shape. We use consistent stage names throughout this documentation:
+
+1. **Preprocessing / QC** — *primary analysis*: alignment and QC of FASTQ files,
+   and processing of image data.
+2. **Optimization** — parameter sweeps that evaluate multiple
+   dimensionality-reduction / clustering settings in parallel to inform final
+   processing.
+3. **Secondary analysis** — post-alignment processing that moves aligned data
+   toward more meaningful context: gene accessibility, peak calling, and motif
+   deviations (epigenomic), clustering, cell typing, and spatial analysis, plus
+   generation of objects (ArchRProject, AnnData, Seurat) for downstream work.
+4. **Plots** — interactive visualization of the results.
+
 ## Where to start
 
 <div class="grid cards" markdown>
-
-- **[Platform Overview](getting-started/platform-overview.md)**
-  How the cloud platform, Latch Data, Plots, and the Registry fit together.
 
 - **[Epigenomics](epigenomics/index.md)**
   Preprocess, optimize, and analyze spatial ATAC-seq / CUT&Tag data.
@@ -60,13 +73,61 @@ locally. We also provide guidance for [**"DIY"**](tools/diy.md) processing on a 
 - **[Co-Profiling](coprofiling/index.md)**
   Integrate epigenomic and transcriptomic outputs.
 
+- **[Glossary](reference/glossary.md)**
+  Latch platform concepts and ATX-specific terms, defined.
+
 </div>
+
+## Data organization
+
+!!! warning "Placeholder — to be fleshed out"
+    This section documents how data is organized within **Customer Workspaces**
+    on Latch. It is specific to customer-facing workspaces and does not describe
+    ATX internal storage.
+
+Customer Workspaces use a consistent set of top-level folders:
+
+| Folder | Contents |
+|---|---|
+| **`Raw_Data`** | Raw FASTQ files. |
+| **`Processed_Data`** | Outputs from the secondary processing pipeline. |
+| **`Optimized_Data`** | Outputs of optimization Workflows. *(definition to confirm)* |
 
 ## Tutorials
 
-For detailed, click-through tutorials on running Workflows and tools in Latch for
-ATX data, see our Scribe collection:
-**[AtlasXomics / LatchBio Tutorials](https://scribehow.com/o/01jzlMHMRV-kYMeF_qMI2Q/page/AtlasXomics_LatchBio_Tutorials__yUhN8xU7TrOmEcrhks-n3A?referrer=documents)**.
+Step-by-step, click-through tutorials for running ATX Workflows and tools on
+Latch are maintained in Scribe.
+
+- **[AtlasXomics / LatchBio Tutorials (collection)](https://scribehow.com/o/01jzlMHMRV-kYMeF_qMI2Q/page/AtlasXomics_LatchBio_Tutorials__yUhN8xU7TrOmEcrhks-n3A?referrer=documents)**
+- **[Running AtlasXBrowser](https://scribehow.com/o/01jzlMHMRV-kYMeF_qMI2Q/viewer/Running_AtlasXBrowser__8Wp0TTJ7SRW85_-vbGe5SA)**
+- **[DIY processing of Epigenomic data](https://github.com/atlasxomics/ATX_epigenomics)**
+
+## Internal (ATX-only) Tasks
+
+!!! note "Internal (ATX-only) Tasks"
+    Several Workflows include Tasks that are **not relevant to customers** and
+    exist only for AtlasXomics internal operations. You may see these in the
+    Latch UI while a Workflow runs, but they do not affect your outputs:
+
+    - **`lims_task`** — pushes QC results and run metadata to **SLIMS**, the ATX
+      internal LIMS platform (separate from Latch).
+    - **`upload_latch_registry`** / **`upload_registry_task`** — writes Workflow
+      outputs and their locations to the **Latch Registry** (the light sample
+      database built into Latch).
+
+    These steps are typically gated behind an *"Upload to SLIMS"* or *"Registry
+    Table ID"* parameter and can be ignored for external/DIY use. Individual
+    Workflow pages therefore omit them from their **Steps** lists, and do not
+    repeat this note.
+
+## Getting help
+
+- Browse the [Tutorials](#tutorials) above for guided, click-through walkthroughs.
+- Each Workflow page links to its source repository on
+  [GitHub](https://github.com/atlasxomics). Some Workflows are private; please
+  contact support@atlasxomics.com for access.
+- Unfamiliar terms are defined in the [Glossary](reference/glossary.md).
+- Contact support@atlasxomics.com with questions and concerns.
 
 ---
 

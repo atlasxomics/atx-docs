@@ -104,7 +104,7 @@ The tasks run in sequence, each enriching the results directory.
 
 !!! note "Internal step"
     A final `registry_task` writes outputs to the Latch Registry (see
-    [Internal Tasks](../getting-started/platform-overview.md#internal-atx-only-tasks)).
+    [Internal Tasks](../index.md#internal-atx-only-tasks)).
 
 ## Inputs
 

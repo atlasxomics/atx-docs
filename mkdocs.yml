@@ -63,10 +63,6 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Getting Started:
-      - Platform Overview: getting-started/platform-overview.md
-      - Data Organization: getting-started/data-organization.md
-      - Tutorials: getting-started/tutorials.md
   - Epigenomics:
       - Overview: epigenomics/index.md
       - Preprocessing: epigenomics/preprocessing.md
