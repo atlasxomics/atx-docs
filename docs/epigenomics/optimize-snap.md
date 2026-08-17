@@ -148,7 +148,7 @@ and medians to choose the parameter set to carry into [ATX_snap](atx-snap.md).
 
 !!! note "Internal step"
     A final `registry_task` writes outputs to the Latch Registry (see
-    [Internal Tasks](../index.md#internal-atx-only-tasks)).
+    [Internal Tasks](../reference/glossary.md#internal-atx-only-tasks)).
 
 ## Example run
 

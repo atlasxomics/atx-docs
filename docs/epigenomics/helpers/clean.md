@@ -28,7 +28,7 @@ scATAC-seq packages.
 
 !!! note "Internal step"
     An `upload_registry_task` writes the cleaned outputs to the Latch Registry
-    (see [Internal Tasks](../../index.md#internal-atx-only-tasks)).
+    (see [Internal Tasks](../../reference/glossary.md#internal-atx-only-tasks)).
 
 ## Inputs
 

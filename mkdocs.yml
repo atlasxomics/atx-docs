@@ -5,6 +5,17 @@ site_url: https://atlasxomics.readthedocs.io/
 repo_url: https://github.com/atlasxomics
 copyright: Copyright &copy; AtlasXomics, Inc.
 
+# Link checking. Under `mkdocs build --strict` these warnings become errors, so a
+# broken cross-reference fails the build instead of shipping silently.
+#   anchors           -> #fragment that doesn't exist on the target page
+#   unrecognized_links-> link that doesn't resolve to a real page
+#   omitted_files     -> page that exists but is missing from the nav
+validation:
+  anchors: warn
+  unrecognized_links: warn
+  absolute_links: warn
+  omitted_files: warn
+
 theme:
   name: material
   logo: assets/x-grey.png
@@ -62,7 +73,9 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
-  - Home: index.md
+  - Home:
+      - index.md
+      - Data Organization: data-organization.md
   - Epigenomics:
       - Overview: epigenomics/index.md
       - Preprocessing: epigenomics/preprocessing.md

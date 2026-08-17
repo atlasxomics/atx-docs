@@ -23,6 +23,7 @@ Terms that are obscure or specific to AtlasXomics.
 : Deterministic Barcoding in Tissue for spatial omics sequencing — the assay
   underlying ATX spatial data. See the [Bibliography](bibliography.md).
 
+<a id="tixel"></a>
 **tixel**
 : A "tissue pixel" — one spatial barcode location on the DBiT-seq grid.
 
@@ -62,6 +63,7 @@ Terms that are obscure or specific to AtlasXomics.
   diagonals, up to distance 2); positions with no clean neighbor in range are
   left untouched. Enabled via the `xtalk_correction` toggle.
 
+<a id="cleaning"></a>
 **cleaning**
 : A [preprocessing](../epigenomics/preprocessing.md) step that remediates
   microfluidic **intensity** artifacts (as opposed to the positional bleed-
@@ -121,6 +123,7 @@ the Latch pieces you will encounter throughout this documentation.
 : Latch's interactive visualization environment, where ATX plotting apps render
   Workflow outputs.
 
+<a id="registry"></a>
 **[Registry](https://docs.latch.bio/registry/overview.html)**
 : A light sample database that is **part of Latch**, storing samples, runs, and
   metadata alongside your data.
@@ -130,6 +133,25 @@ the Latch pieces you will encounter throughout this documentation.
   instance) preconfigured with Jupyter and RStudio, used for analysis and for
   running interactive tools such as AtlasXBrowser.
 
+<a id="slims"></a>
 **SLIMS**
 : AtlasXomics' internal LIMS platform — **separate from Latch** and used for ATX
   operations only. The *"Upload to SLIMS"* toggle is ATX-internal.
+
+## Internal (ATX-only) Tasks
+
+Several Workflows include Tasks that are **not relevant to customers** and exist
+only for AtlasXomics internal operations. You may see these in the Latch UI while
+a Workflow runs, but they do not affect your outputs.
+
+**`lims_task`**
+: Pushes QC results and run metadata to [SLIMS](#slims), the ATX internal LIMS
+  platform (separate from Latch).
+
+**`upload_latch_registry`** / **`upload_registry_task`**
+: Writes Workflow outputs and their locations to the [Registry](#registry) — the
+  light sample database built into Latch.
+
+These steps are typically gated behind an *"Upload to SLIMS"* or *"Registry Table
+ID"* parameter and can be ignored for external/DIY use. Individual Workflow pages
+therefore omit them from their **Steps** lists, and do not repeat this note.
