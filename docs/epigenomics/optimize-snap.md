@@ -110,10 +110,10 @@ then each parameter combination is evaluated in parallel.
 
 ## Outputs
 
-Written to `latch:///snap_opts/<project_name>/`.
+Written to `latch:///atac_optimize_snap/<project_name>/`.
 
 ```text
-snap_opts/<project_name>/
+atac_optimize_snap/<project_name>/
 ├── combined.h5ad
 ├── combined_ds.h5ad                # only when subsampling
 ├── medians.csv
@@ -142,7 +142,7 @@ snap_opts/<project_name>/
 | `subsample_info.txt` | Subsampling summary — only when subsampling is enabled. |
 
 Intermediate artifacts (the shared combined object and each set's `combined.h5ad`)
-are kept under `latch:///snap_opts/<project_name>/_intermediate/` (per-set outputs
+are kept under `latch:///atac_optimize_snap/<project_name>/_intermediate/` (per-set outputs
 in `_mapped_sets/<set>/`), with performance logs under `logs/`. Use the galleries
 and medians to choose the parameter set to carry into [ATX_snap](atx-snap.md).
 

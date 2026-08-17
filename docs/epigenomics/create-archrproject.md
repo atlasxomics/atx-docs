@@ -47,7 +47,7 @@ during [optimize archr](optimize-archr.md) to configure this run.
       BEDs, figures, analysis tables, and a Latch Plots artifact.
 
     Everything is written to `output_dir` (default
-    `latch:///ArchRProjects/<project_name>`).
+    `latch:///atac_analysis_archr/<project_name>`).
 
 ## Inputs
 
@@ -69,7 +69,7 @@ during [optimize archr](optimize-archr.md) to configure this run.
 | `lsi_resolution` | float | `0.5` | `clusterParams` resolution for `addIterativeLSI`. |
 | `lsi_varfeatures` | int | `25000` | `varFeatures` for `addIterativeLSI`. |
 | `clustering_resolution` | float | `1.0` | `resolution` for `addClusters`. |
-| `output_dir` | LatchDir | `latch:///ArchRProjects/` | Output location. |
+| `output_dir` | LatchDir | `latch:///atac_analysis_archr/` | Output location. |
 
 ??? note "Hidden / advanced parameters"
     | Parameter | Default | Description |
@@ -87,17 +87,19 @@ during [optimize archr](optimize-archr.md) to configure this run.
 
 ## Outputs
 
-Loaded into Latch Data under `latch:///ArchRProjects/<project_name>/` (or your
+Loaded into Latch Data under `latch:///atac_analysis_archr/<project_name>/` (or your
 chosen `output_dir`). Open the whole result in Plots via the included
 `Launch_Plots/artifact.json`.
 
 ```text
-ArchRProjects/<project_name>/
+atac_analysis_archr/<project_name>/
 ├── <project_name>_ArchRProject/            # Arrow files, peak sets, motif annotations, bigWigs
-├── <run_id>_SeuratObj.rds, combined.rds    # gene-accessibility Seurat objects
-├── <run_id>_SeuratObjMotif.rds, combined_m.rds   # motif-deviation Seurat objects
-├── *_converted.h5ad, combined_*.h5ad       # AnnData objects
-├── seqlogo.rds
+├── seurat_objects/                         # all Seurat .rds objects
+│   ├── <run_id>_SeuratObj.rds, combined.rds        # gene-accessibility
+│   ├── <run_id>_SeuratObjMotif.rds, combined_m.rds # motif-deviation
+│   └── seqlogo.rds
+├── anndata/                                # all AnnData .h5ad objects
+│   └── *_converted.h5ad, combined_*.h5ad
 ├── {cluster,sample,condition}_coverages/   # .bw coverage tracks
 ├── {cluster,sample,condition}_peak_beds/   # BED files
 ├── figures/
@@ -110,12 +112,12 @@ ArchRProjects/<project_name>/
 | Path | Description |
 |---|---|
 | `<project_name>_ArchRProject/` | The saved ArchRProject — Arrow files, project state, peak matrices, reproducible peak sets, motif annotations, and group bigWigs. |
-| `<run_id>_SeuratObj.rds` / `combined.rds` | Per-run and combined **gene-accessibility** Seurat objects (with spatial coords + ArchR metadata). |
-| `<run_id>_SeuratObjMotif.rds` / `combined_m.rds` | Per-run and combined **motif-deviation** Seurat objects. |
-| `<run_id>_g_converted.h5ad` / `<run_id>_m_converted.h5ad` | Per-run AnnData conversions of the gene / motif objects. |
-| `combined_ge.h5ad`, `combined_motifs.h5ad` | **Full** combined gene-accessibility and motif-deviation AnnData objects — use these for any downstream calculation. |
-| `combined_sm_ge.h5ad`, `combined_sm_motifs.h5ad` | **Reduced (`_sm`)** versions for [Latch Plots](plots.md) — see the note below. |
-| `seqlogo.rds` | Position weight matrices for motif sequence logos. |
+| `seurat_objects/<run_id>_SeuratObj.rds` / `seurat_objects/combined.rds` | Per-run and combined **gene-accessibility** Seurat objects (with spatial coords + ArchR metadata). |
+| `seurat_objects/<run_id>_SeuratObjMotif.rds` / `seurat_objects/combined_m.rds` | Per-run and combined **motif-deviation** Seurat objects. |
+| `anndata/<run_id>_g_converted.h5ad` / `anndata/<run_id>_m_converted.h5ad` | Per-run AnnData conversions of the gene / motif objects. |
+| `anndata/combined_ge.h5ad`, `anndata/combined_motifs.h5ad` | **Full** combined gene-accessibility and motif-deviation AnnData objects — use these for any downstream calculation. |
+| `anndata/combined_sm_ge.h5ad`, `anndata/combined_sm_motifs.h5ad` | **Reduced (`_sm`)** versions for [Latch Plots](plots.md) — see the note below. |
+| `seurat_objects/seqlogo.rds` | Position weight matrices for motif sequence logos. |
 
 !!! warning "Don't compute on the reduced (`_sm`) objects"
     The `_sm` objects are built for fast loading in [Plots](plots.md): `clean_adata`

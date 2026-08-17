@@ -66,7 +66,7 @@ optional [cleaning](../reference/glossary.md#cleaning) and
 | `starSet` | str | `atlasRNASeq` | STAR ParamSet. |
 | `outReads` | int | `10000000` | Reads to process (downsample target). |
 | `run_optimize` | bool | `False` | Run the optional clustering sweep (step 3). |
-| `output_directory` | LatchDir | `latch:///rnaSeqQC_output` | Output location. |
+| `output_directory` | LatchDir | `latch:///rna_preprocessing` | Output location. |
 
 ??? note "Cleaning / cross-talk correction"
     | Parameter | Default | Description |
@@ -91,12 +91,12 @@ optional [cleaning](../reference/glossary.md#cleaning) and
 
 ## Outputs
 
-Written to `output_directory` (default `latch:///rnaSeqQC_output/`). Everything
+Written to `output_directory` (default `latch:///rna_preprocessing/`). Everything
 for the sample lands under the **`<sample>_star/`** directory — the FastQ-Screen
 results and the optional optimization sweep are nested inside it:
 
 ```text
-rnaSeqQC_output/
+rna_preprocessing/
 └── <sample>_star/                    # alignment & QC (STARsolo)
     ├── … count matrix, MultiQC report, QC metrics & plots
     ├── … FastQ-Screen contamination results

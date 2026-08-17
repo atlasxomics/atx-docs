@@ -58,7 +58,7 @@ subdirectory contains a skip-reason text file instead.
 
 | Parameter | Type | Description |
 |---|---|---|
-| `project_name` | str | Output folder name under `glue_outs/`. |
+| `project_name` | str | Output folder name under `copro_integration_analysis/`. |
 | `wt_anndata` | LatchFile | **Transcriptome** AnnData (gene expression) — from [optimize_wt](../transcriptome/optimize-wt.md). |
 | `ge_anndata` | LatchFile | **Gene-accessibility** AnnData — from [ATX_snap](../epigenomics/atx-snap.md) / [create ArchRProject](../epigenomics/create-archrproject.md). |
 | `coverages_genome` | enum | Genome for the track browser (default `hg38`). |
@@ -79,10 +79,10 @@ subdirectory contains a skip-reason text file instead.
 
 ## Outputs
 
-Written to `latch:///glue_outs/<project_name>/`.
+Written to `latch:///copro_integration_analysis/<project_name>/`.
 
 ```text
-glue_outs/<project_name>/
+copro_integration_analysis/<project_name>/
 ├── rna_copro.h5ad                  # full   — transcriptome, joint clusters
 ├── rna_copro_sm.h5ad               # reduced (Plots only)
 ├── atac_gs_copro.h5ad              # full   — ATAC gene score, joint clusters

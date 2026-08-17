@@ -107,10 +107,10 @@ parallel.
 
 ## Outputs
 
-Written to `latch:///wt_opts/<project_name>/`.
+Written to `latch:///rna_analysis/<project_name>/`.
 
 ```text
-wt_opts/<project_name>/
+rna_analysis/<project_name>/
 ├── combined.h5ad                   # full
 ├── combined_sm.h5ad                 # reduced (Plots only)
 ├── medians.csv, metadata.csv
@@ -153,7 +153,7 @@ wt_opts/<project_name>/
     calculations (differential expression, marker detection, re-clustering, etc.).
     Use the full `combined.h5ad` for those.
 
-Per-set objects are kept under `latch:///wt_opts/<project_name>/<set>/`, and the
+Per-set objects are kept under `latch:///rna_analysis/<project_name>/<set>/`, and the
 shared preprocessed object under `_intermediates/`.
 
 ## Example run

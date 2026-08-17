@@ -7,7 +7,7 @@ processing platform. AtlasXomics has developed a suite of tools that enable
 scientists to process spatial-omics data both **on the cloud** and **locally**.
 Here we provide comprehensive, end-to-end documentation for that platform.
 
-## What this platform does
+## Platform overview
 
 ![DBiT-seq workflow diagram](assets/images/DBiT-seq_workflow_diagram.png)
 
@@ -22,7 +22,7 @@ primary processing paths and an optional combined path:
 Our standard processing pipeline runs on the **LatchBio** cloud platform.
 Outputs are stored in the **Latch File system** (*Latch Data*) and visualized in
 **Plots**. Image data can be processed with **AtlasXBrowser** on a Latch Pod or
-locally. We also provide guidance for **"DIY"** processing on a local machine.
+locally. We also provide guidance for [**"DIY"**](tools/diy.md) processing on a local machine.
 
 ## Data flow at a glance
 

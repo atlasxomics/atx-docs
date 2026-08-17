@@ -37,7 +37,7 @@ ATAC gene score) and color by shared features.
 1. **Open Plots and select the glue output (recommended).** Start a notebook
    from the **Plots** module in the Latch Console, then use the **Select Data**
    tab's folder picker to choose the **`atx_glue` output directory**
-   (`glue_outs/<project>/`). The notebook loads the `*_copro_sm.h5ad` objects,
+   (`copro_integration_analysis/<project>/`). The notebook loads the `*_copro_sm.h5ad` objects,
    `coverages/`, and `peak2gene/`, then (re)initializes every other tab.
 2. **Launch from the Workflow output.** If a `Launch_Plots/artifact.json` is
    present in the atx_glue output, use its *Open in Plots* action to start

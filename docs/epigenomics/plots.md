@@ -33,8 +33,8 @@ that opens their result directly in this Plots template.
 There are two ways to open a result in Plots:
 
 1. **Launch from a Workflow output (recommended).** In Latch Data, open the
-   secondary-analysis output folder (e.g. `snap_outs/<project>/` or
-   `ArchRProjects/<project>/`) and use its **`Launch_Plots/artifact.json`** /
+   secondary-analysis output folder (e.g. `atac_analysis_snap/<project>/` or
+   `atac_analysis_archr/<project>/`) and use its **`Launch_Plots/artifact.json`** /
    *Open in Plots* action. This starts a Plots notebook **pre-loaded** with that
    experiment's data.
 2. **Open Plots and select data manually.** Start a new notebook from the

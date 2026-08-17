@@ -58,9 +58,9 @@ LaunchPlan(
         "run_id": "default",
         "missing_rows": [11],
         "missing_columns": [24],
-        "fragments_file": LatchFile("latch:///chromap_outputs/demo/chromap_output/fragments.tsv.gz"),
+        "fragments_file": LatchFile("latch:///fastq2frags/demo/chromap_output/fragments.tsv.gz"),
         "positions_file": LatchFile("latch:///spatials/demo/spatial/tissue_positions_list.csv"),
-        "cluster_specification": LatchDir("latch:///ArchRProjects/demo/demo_ArchRProject"),
+        "cluster_specification": LatchDir("latch:///atac_analysis_archr/demo/demo_ArchRProject"),
         "output_directory": "demo",
     },
 )

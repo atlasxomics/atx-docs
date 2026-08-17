@@ -34,7 +34,7 @@ that opens its result directly in this Plots template.
 ## Starting Plots
 
 1. **Launch from the Workflow output (recommended).** In Latch Data, open the
-   `wt_opts/<project>/` output folder and use its **`Launch_Plots/artifact.json`**
+   `rna_analysis/<project>/` output folder and use its **`Launch_Plots/artifact.json`**
    / *Open in Plots* action to start a notebook **pre-loaded** with the data.
 2. **Open Plots and select data manually.** Start a new notebook from the
    **Plots** module in the Latch Console, then use the **Select Data** tab to

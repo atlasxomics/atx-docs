@@ -98,26 +98,31 @@ and feeds the [optimization](optimize-archr.md) and
 
 ## Outputs
 
-All outputs are written under `latch:///chromap_outputs/<run_id>/`. Note that
-**`frag_metrics/` is nested inside `chromap_output/`** (not a top-level
-sibling):
+All outputs are written under `latch:///fastq2frags/<run_id>/`. The three
+primary deliverables — the fragments file, the HTML QC report, and the coverage
+track — are also **copied to the top level** of the run directory for
+convenience (the originals remain in their subfolders):
 
 ```text
-chromap_outputs/<run_id>/
-├── preprocessing/          # filtered reads
-├── chromap_output/         # alignment
-│   └── frag_metrics/       # fragment metrics & report
-└── Statistics/             # summary statistics & peaks
+fastq2frags/<run_id>/
+├── fragments.tsv.gz                # top-level copy of the fragments file
+├── fragment_analysis_report.html   # top-level copy of the QC report
+├── fragmentscell.bw                # top-level copy of the coverage track
+├── filtered_fastqs/                # filtered reads
+├── chromap_output/                 # alignment
+└── run_metrics/                    # fragment metrics & report
+    └── pycistopic_metrics/         # summary statistics & peaks
 ```
 
-### `preprocessing/` — filtered reads
+### `filtered_fastqs/` — filtered reads
 
 The linker-filtered FASTQs and filtering statistics from the `filtering` task
-(bbduk). These are the reads actually passed to alignment.
+(bbduk). These are the reads actually passed to alignment. Both FASTQs follow
+the same `<run_id>_linker2_R1/R2` naming scheme.
 
 | File | Description |
 |---|---|
-| `<run_id>_S1_L001_R1_001.fastq.gz` | Linker-filtered **read 1**, renamed to standard Illumina lane naming. |
+| `<run_id>_linker2_R1.fastq.gz` | Linker-filtered **read 1** (surviving both linker-1 and linker-2 filtering). |
 | `<run_id>_linker2_R2.fastq.gz` | Linker-filtered **read 2** (surviving both linker-1 and linker-2 filtering). |
 | `<run_id>_l1_stats.txt` | bbduk stats for the linker-1 filtering pass (reads matched / removed). |
 | `<run_id>_l2_stats.txt` | bbduk stats for the linker-2 filtering pass. |
@@ -133,10 +138,10 @@ The core alignment products from the `alignment` task.
 | `aln.bed` | Raw Chromap BED alignment output (pre fragment-file post-processing). |
 | `chromap_log.txt` | Chromap run log — alignment rate, duplicate rate, and other run diagnostics. |
 
-### `chromap_output/frag_metrics/` — fragment metrics & report
+### `run_metrics/` — fragment metrics & report
 
-Nested inside `chromap_output/`. Per-cell metrics, QC plots, and a standalone
-report from the `metrics_task` (`atac_analysis_summary_prep.py` +
+A top-level sibling of `chromap_output/`. Per-cell metrics, QC plots, and a
+standalone report from the `metrics_task` (`atac_analysis_summary_prep.py` +
 `fragReport.py`).
 
 | File | Description |
@@ -144,7 +149,7 @@ report from the `metrics_task` (`atac_analysis_summary_prep.py` +
 | `fragment_analysis_report.html` | Self-contained HTML QC report summarizing the metrics and plots below. |
 | `fragments_adata_obs.csv` | Per-tixel (per-barcode) metrics table — fragment counts, TSS enrichment, FRIP, duplication and mitochondrial rates. The canonical single-cell metrics file. |
 | `fragments_peakList.bed.gz` / `fragments_peaks.bed` | Called peaks / peak list for the run. |
-| `fragments_cell.bw` | Aggregated coverage track ([bigWig](https://genome.ucsc.edu/goldenPath/help/bigWig.html)) for genome-browser visualization. |
+| `fragmentscell.bw` | Aggregated coverage track ([bigWig](https://genome.ucsc.edu/goldenPath/help/bigWig.html)) for genome-browser visualization. |
 | `fragments_frip_hist.png` | Distribution of FRIP (fraction of reads in peaks) across tixels. |
 | `fragments_tsse.png` / `fragments_norm_tss.png` | TSS-enrichment distribution and normalized TSS profile. |
 | `fragments_frag_size.png` | Fragment-size distribution (nucleosome banding). |
@@ -155,10 +160,10 @@ report from the `metrics_task` (`atac_analysis_summary_prep.py` +
 | `run_id.txt` | The run ID (used by the report). |
 | `chromap_log.txt` | Copy of the Chromap log. |
 
-### `Statistics/` — summary statistics & peaks
+### `run_metrics/pycistopic_metrics/` — summary statistics & peaks
 
-Run-level summary and peak calling from the `statistics` task (pycisTopic +
-`singlecellsummary.py`).
+Nested inside `run_metrics/`. Run-level summary and peak calling from the
+`statistics` task (pycisTopic + `singlecellsummary.py`).
 
 | File | Description |
 |---|---|
@@ -171,8 +176,8 @@ Run-level summary and peak calling from the `statistics` task (pycisTopic +
 
 !!! note "Return value"
     The Workflow function returns the handles `[aln.bed, fragments.tsv.gz,
-    chromap_log.txt, fragments.tsv.gz.tbi, Statistics/, frag_metrics/]`; the
-    individual files above live inside those directories.
+    chromap_log.txt, fragments.tsv.gz.tbi, run_metrics/pycistopic_metrics/,
+    run_metrics/]`; the individual files above live inside those directories.
 
 ## Example run
 

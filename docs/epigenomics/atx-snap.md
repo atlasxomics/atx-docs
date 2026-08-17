@@ -128,7 +128,7 @@ The tasks run in sequence, each enriching the results directory.
 | `n_comps` | int | `30` | Spectral-embedding dimensions. |
 | `resolution` | float | `1.0` | Leiden clustering resolution. |
 | `clustering_iters` | int | `1` | Iterative feature-selection rounds. |
-| `output_dir` | LatchDir | `latch:///snap_outs/` | Output location. |
+| `output_dir` | LatchDir | `latch:///atac_analysis_snap/` | Output location. |
 
 ??? note "Hidden / advanced parameters"
     | Parameter | Default | Description |
@@ -141,19 +141,22 @@ The tasks run in sequence, each enriching the results directory.
 
 ## Outputs
 
-Written to `latch:///snap_outs/<project_name>/` (or your chosen `output_dir`).
-ATX_snap produces the **same analysis-table set as
+Written to `latch:///atac_analysis_snap/<project_name>/` (or your chosen
+`output_dir`). ATX_snap produces the **same analysis-table set as
 [create ArchRProject](create-archrproject.md)** — grouped by cluster, sample, and
-condition — computed here with SnapATAC2 / Scanpy. Open the whole result in Plots
-via the included `Launch_Plots/artifact.json`.
+condition — computed here with SnapATAC2 / Scanpy. AnnData `.h5ad` objects are
+collected under `anndata/` and Seurat `.rds` objects under `seurat_objects/`.
+Open the whole result in Plots via the included `Launch_Plots/artifact.json`.
 
 ```text
-snap_outs/<project_name>/
-├── combined.h5ad
-├── combined_ge.h5ad, combined_motifs.h5ad          # full
-├── combined_sm_ge.h5ad, combined_sm_motifs.h5ad    # reduced (Plots only)
-├── <run_id>_SeuratObj.rds, <run_id>_SeuratObjMotif.rds
-├── *_converted.h5ad
+atac_analysis_snap/<project_name>/
+├── anndata/
+│   ├── combined.h5ad
+│   ├── combined_ge.h5ad, combined_motifs.h5ad          # full
+│   ├── combined_sm_ge.h5ad, combined_sm_motifs.h5ad    # reduced (Plots only)
+│   └── <run_id>_g_converted.h5ad, <run_id>_m_converted.h5ad
+├── seurat_objects/
+│   └── <run_id>_SeuratObj.rds, <run_id>_SeuratObjMotif.rds
 ├── peaks.bed
 ├── filtering_summary.csv
 ├── tables/                    # analysis tables + medians, params, embeddings, SVGs
@@ -165,11 +168,11 @@ snap_outs/<project_name>/
 
 | Path | Description |
 |---|---|
-| `combined.h5ad` | The combined AnnData object (tile matrix, spectral embedding, Leiden clusters, spatial coords). |
-| `combined_ge.h5ad`, `combined_motifs.h5ad` | **Full** combined gene-accessibility and motif-deviation AnnData objects — use these for any downstream calculation. |
-| `combined_sm_ge.h5ad`, `combined_sm_motifs.h5ad` | **Reduced (`_sm`)** versions for [Latch Plots](plots.md) — see the note below. |
-| `<run_id>_SeuratObj.rds` / `<run_id>_SeuratObjMotif.rds` | Per-run gene-accessibility and motif-deviation Seurat objects. |
-| `<run_id>_g_converted.h5ad` / `<run_id>_converted.h5ad` | Per-run AnnData conversions. |
+| `anndata/combined.h5ad` | The combined AnnData object (tile matrix, spectral embedding, Leiden clusters, spatial coords). |
+| `anndata/combined_ge.h5ad`, `anndata/combined_motifs.h5ad` | **Full** combined gene-accessibility and motif-deviation AnnData objects — use these for any downstream calculation. |
+| `anndata/combined_sm_ge.h5ad`, `anndata/combined_sm_motifs.h5ad` | **Reduced (`_sm`)** versions for [Latch Plots](plots.md) — see the note below. |
+| `seurat_objects/<run_id>_SeuratObj.rds` / `seurat_objects/<run_id>_SeuratObjMotif.rds` | Per-run gene-accessibility and motif-deviation Seurat objects. |
+| `anndata/<run_id>_g_converted.h5ad` / `anndata/<run_id>_m_converted.h5ad` | Per-run AnnData conversions. |
 | `peaks.bed` | Called peaks for the project. |
 
 !!! warning "Don't compute on the reduced (`_sm`) objects"
