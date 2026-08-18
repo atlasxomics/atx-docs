@@ -110,6 +110,8 @@ flowchart LR
 
 Epigenomics-specific, single-step utilities:
 
+- [cram2frags](helpers/cram2frags.md) — convert an indexed CRAM alignment into a
+  fragments file (e.g. Ultima runs).
 - [atx_convert](helpers/atx-convert.md) — convert between Seurat and H5AD.
 - [ATX impute](helpers/impute.md) — fill in missing lanes.
 - [clean](helpers/clean.md) — cleaning / cross-talk correction.

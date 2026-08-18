@@ -84,6 +84,7 @@ nav:
       - Secondary Analysis - create ArchRProject: epigenomics/create-archrproject.md
       - Secondary Analysis - ATX_snap: epigenomics/atx-snap.md
       - Plots: epigenomics/plots.md
+      - Helper - cram2frags: epigenomics/helpers/cram2frags.md
       - Helper - atx_convert: epigenomics/helpers/atx-convert.md
       - Helper - ATX impute: epigenomics/helpers/impute.md
       - Helper - clean: epigenomics/helpers/clean.md

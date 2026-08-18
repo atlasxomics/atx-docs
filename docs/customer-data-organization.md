@@ -37,7 +37,7 @@ produced with ArchR.
 |---|---|---|
 | `spatials/` | [AtlasXBrowser](tools/atlasxbrowser.md) | The [Spatial folder](reference/glossary.md#spatial-folder) per run — tissue images, `tissue_positions_list.csv`, and metadata. |
 | `fastq2frags/` | [ATX epigenomic preprocessing](epigenomics/preprocessing.md) | Filtered FASTQs, Chromap alignment, the **fragments file**, and QC metrics/reports. |
-| `cram2frags/` | `cram2frag_wf` | Fragments produced from CRAM input rather than FASTQ. |
+| `cram2frags/` | [cram2frags](epigenomics/helpers/cram2frags.md) | Fragments produced from CRAM input (e.g. Ultima runs) rather than FASTQ. |
 | `atac_optimize_archr/` | [optimize archr](epigenomics/optimize-archr.md) | Parameter-sweep comparison figures and metrics (ArchR). |
 | `atac_optimize_snap/` | [optimize_snap](epigenomics/optimize-snap.md) | Parameter-sweep comparison figures and metrics (SnapATAC2). |
 | `atac_analysis_archr/` | [create ArchRProject](epigenomics/create-archrproject.md) | The ArchRProject, Seurat/AnnData objects, coverage tracks, peak BEDs, and analysis tables from ArchR. |
@@ -81,6 +81,6 @@ See each Workflow's **Outputs** section for the full contents of its directory.
 
     | Folder | Contents |
     |---|---|
-    | **`Raw_Data`** | Raw FASTQ files, spatial folders, preprocessing outputs for [ATAC](epigenomics/preprocessing.md#outputs) and [RNA](transcriptome/rnaqc#outputs). |
+    | **`Raw_Data`** | Raw FASTQ files, spatial folders, preprocessing outputs for [ATAC](epigenomics/preprocessing.md#outputs) and [RNA](transcriptome/rnaqc.md#outputs). |
     | **`Processed_Data`** | Outputs from the secondary processing pipeline. |
     | **`Optimized_Data`** | Preprocessing results from shallow-sequenced optimization experiments (usually bulks).  |

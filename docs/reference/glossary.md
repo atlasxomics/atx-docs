@@ -75,6 +75,7 @@ Terms that are obscure or specific to AtlasXomics.
   standalone [clean](../epigenomics/helpers/clean.md) Workflow applies a related
   row/column outlier-downsampling directly to a fragments file.
 
+<a id="fragments-file"></a>
 **fragments file**
 : A BED-like, tab-delimited `fragments.tsv.gz` file where each row is an ATAC-seq
   fragment; the primary output of epigenomic preprocessing.
