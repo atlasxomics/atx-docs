@@ -56,12 +56,33 @@ parallel.
 4. **`opt_set_task`** — The per-set evaluation, **fanned out in parallel** (one
    task per set via `map_task`). Clusters the shared object — Scanpy (Leiden with
    `resolution`, `n_comps`, `n_neighbors`, `min_dist`, `spread`, optional Harmony,
-   `merge_small_clusters`) or STAGATE — optionally computes cluster markers
-   (`rank_genes_groups` → `deg_clusters.csv`), and writes that set's
-   `combined_sm.h5ad`.
+   `merge_small_clusters`) or STAGATE — computes **neighborhood enrichment** for
+   the set (see below), optionally computes cluster markers (`rank_genes_groups`
+   → `deg_clusters.csv`), and writes that set's own output directory with both
+   `combined.h5ad` and `combined_sm.h5ad`.
 5. **`wtOpt_task`** — Aggregates every set into the comparison outputs: UMAP,
-   spatial, and QC galleries, spatial-coherence and spatially-variable-gene
-   results, per-run QC medians, and a Latch Plots artifact.
+   spatial, neighborhood-enrichment, and QC galleries, spatial-coherence and
+   spatially-variable-gene results, and per-run QC medians.
+
+### Neighborhood enrichment
+
+For each successful parameter set the Workflow builds a **within-sample spatial
+neighbor graph** ([`squidpy.gr.spatial_neighbors`](https://squidpy.readthedocs.io/en/stable/api/squidpy.gr.spatial_neighbors.html))
+and runs [`squidpy.gr.nhood_enrichment`](https://squidpy.readthedocs.io/en/stable/api/squidpy.gr.nhood_enrichment.html)
+on the cluster labels. This scores, by permutation test, which pairs of clusters
+sit next to each other in tissue more (or less) often than chance — turning the
+clustering into a statement about **spatial organization** rather than
+expression alone.
+
+The result is a cluster × cluster z-score matrix, stored in the set's object
+under `uns["cluster_nhood_enrichment"]` and rendered as a heatmap. Enrichment is
+also **precomputed per sample and per condition** when those groups have more
+than one value, so Plots can show subsets without recomputing. Sets with fewer
+than two clusters are skipped.
+
+Alongside it, `spatial_coherence.csv` scores how spatially contiguous each set's
+clusters are — together these give a spatial criterion for choosing a parameter
+set, next to the visual UMAP/spatial comparison.
 
 ## Inputs
 
@@ -111,50 +132,84 @@ Written to `latch:///rna_analysis/<project_name>/`.
 
 ```text
 rna_analysis/<project_name>/
-├── combined.h5ad                   # full
-├── combined_sm.h5ad                 # reduced (Plots only)
-├── medians.csv, metadata.csv
-├── deg_clusters.csv, svg_genes.csv
-├── figures/
-│   ├── all_umaps.png, all_spatialdim.png, spatial_qc.png
-│   ├── spatial_coherence.png / .csv, svg_spatial.png
-│   └── *.html                    # browsable galleries
-├── Launch_Plots/artifact.json
-├── <set>/                        # per-parameter-set objects
-└── _intermediates/               # shared preprocessed object
+├── metadata.csv, medians.csv
+├── spatial_coherence.csv, svg_genes.csv
+├── all_umaps.html                  # browsable galleries
+├── all_spatialdim.html
+├── all_neighborhoods.html
+├── spatial_qc.html
+├── svg_spatial.html
+├── figures/                        # static mirrors of the galleries
+├── set1_backend-scanpy_cr1-0-nc30-nn15-md0-5-sp1-0/   # one per parameter set
+│   ├── combined.h5ad               # full
+│   ├── combined_sm.h5ad            # reduced (Plots)
+│   ├── Launch_Plots/artifact.json
+│   └── deg_clusters.csv, deg_clusters_top<N>.csv, figures/
+└── _intermediates/                 # shared preprocessed object
 ```
+
+!!! note "The objects live in the per-set folders"
+    There is no top-level `combined.h5ad`. Each parameter set gets its own
+    directory named for its backend and values — e.g.
+    `set1_backend-scanpy_cr1-0-nc30-nn15-md0-5-sp1-0` (STAGATE sets omit `nc`) —
+    holding that set's objects and its own Plots artifact. The top level holds
+    only the cross-set comparison outputs. Pick a set from the galleries, then
+    launch Plots from **that set's** `Launch_Plots/artifact.json`.
+
+**Top-level summary files**
 
 | Path | Description |
 |---|---|
-| `combined.h5ad` | The **full** combined, clustered AnnData object — use this for any downstream calculation. |
+| `metadata.csv` | One-row manifest of the run — run IDs, conditions, filter thresholds, backend, and the full parameter grid. |
+| `medians.csv` | Per-run median QC after filtering (UMI counts, detected genes, percent mitochondrial). |
+| `spatial_coherence.csv` | Per-parameter-set spatial-coherence scores, when a spatial neighbor graph can be built. |
+| `svg_genes.csv` | Spatially variable gene statistics, when spatial autocorrelation completes. |
+
+**Top-level galleries** (HTML, with static `.png`/`.pdf` mirrors under `figures/`)
+
+| Path | Description |
+|---|---|
+| `all_umaps.html` | UMAP panels per parameter set, colored by cluster and — where applicable — sample and condition. |
+| `all_spatialdim.html` | Spatial cluster maps per parameter set and sample. |
+| `all_neighborhoods.html` | Neighborhood-enrichment heatmaps per parameter set with at least two clusters. |
+| `spatial_qc.html` | Spatial maps of QC metrics (total counts, detected genes, percent mitochondrial). |
+| `svg_spatial.html` | Spatial expression maps for the top spatially variable genes. |
+
+**Per-set directory**
+
+| Path | Description |
+|---|---|
+| `combined.h5ad` | The **full** clustered AnnData for the set — embeddings, layers, metadata, and the neighborhood-enrichment matrices (including the precomputed sample / condition subsets). Use this for any downstream calculation. |
 | `combined_sm.h5ad` | The **reduced (`_sm`)** object loaded by [Transcriptome Plots](plots.md) — see the note below. |
-| `medians.csv` | Per-run QC medians. |
-| `metadata.csv` | The parameters set for this run. |
-| `deg_clusters.csv` | Per-cluster differential-expression markers (`rank_genes_groups`). |
-| `svg_genes.csv` | Spatially variable genes. |
-| `figures/all_umaps.png` | UMAP embeddings for every parameter set — one page per set. |
-| `figures/all_spatialdim.png` | Spatial cluster maps for every parameter set. |
-| `figures/spatial_qc.png` | Spatial QC grid per Run. |
-| `figures/spatial_coherence.png` / `spatial_coherence.csv` | Spatial-coherence score of the clustering. |
-| `figures/svg_spatial.png` | Spatial maps of the top spatially variable genes. |
-| `*.html` galleries | Browsable versions of the figures above (`all_umaps`, `all_spatialdim`, `spatial_qc`, `svg_spatial`). |
-| `Launch_Plots/artifact.json` | Latch Plots artifact for opening the result in the Transcriptome Plots template. |
+| `Launch_Plots/artifact.json` | Latch Plots artifact pointing at that set's `combined_sm.h5ad`. |
+| `deg_clusters.csv` | Per-cluster marker genes (`rank_genes_groups`) — only when `compute_cluster_markers` is enabled. |
+| `deg_clusters_top<N>.csv` | Compact table of the top `marker_top_n` markers per cluster. |
+| `figures/cluster_marker_heatmap_top<N>.png` | Marker-gene heatmap for the set (plus a high-resolution PDF variant). |
 
-!!! warning "Don't compute on the reduced (`_sm`) object"
-    `combined_sm.h5ad` is built for fast loading in [Plots](plots.md):
-    `make_small_anndata` strips the raw counts (`.raw`), extra `layers` and
-    `varm`, and all but a small set of grouping / QC `obs` / `var` columns,
-    keeping only the feature matrix, the UMAP embedding, and spatial coordinates.
-    **Most importantly, the feature matrix `.X` is cast to `float16`** — so the
-    (originally integer) counts lose precision and are no longer exact.
+!!! warning "The reduced (`_sm`) object is a subset, not a substitute"
+    `combined_sm.h5ad` is built for fast loading in [Plots](plots.md).
+    `make_small_anndata` keeps the feature matrix, the UMAP embedding, and
+    spatial coordinates, and drops everything Plots doesn't need: `.raw`, `varm`,
+    `obsp`, the PCA / neighbor graphs (`uns["pca"]`, `uns["neighbors"]`, all
+    `obsm` except `spatial`, `spatial_offset`, and `X_umap`), and the per-cell /
+    per-gene QC `obs` / `var` columns.
 
-    Because of the `float16` coercion (and the removed raw counts / layers), the
-    `_sm` object is **for visualization only** — do **not** use it for downstream
-    calculations (differential expression, marker detection, re-clustering, etc.).
-    Use the full `combined.h5ad` for those.
+    Two things to know about the matrices:
 
-Per-set objects are kept under `latch:///rna_analysis/<project_name>/<set>/`, and the
-shared preprocessed object under `_intermediates/`.
+    - **`.X` is the normalized matrix, not counts.** It is taken from the first
+      available of `layers["log1p"]`, `layers["normalized"]`, then `.X` — so on a
+      standard run it holds **log1p-normalized** values, cast to `float32` and
+      kept sparse. The source is recorded in `uns["plotting_x_source"]`.
+    - **Raw counts are retained** in `layers["counts"]` (sparse, `float32`) for
+      count-aware plotting. All other working layers are dropped.
+
+    So the `_sm` object is exact — `float32` represents the integer counts
+    without loss — but it is **incomplete**. Re-clustering, neighbor-graph work,
+    and anything needing the dropped QC metadata or embeddings must use the full
+    `combined.h5ad`. The neighborhood-enrichment matrices **are** carried over,
+    so Plots can draw those heatmaps from the reduced object.
+
+The shared preprocessed object is kept under `_intermediates/`.
 
 ## Example run
 

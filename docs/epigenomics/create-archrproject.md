@@ -47,7 +47,7 @@ during [optimize archr](optimize-archr.md) to configure this run.
       BEDs, figures, analysis tables, and a Latch Plots artifact.
 
     Everything is written to `output_dir` (default
-    `latch:///atac_analysis_archr/<project_name>`).
+    `latch:///epi_analysis_archr/<project_name>`).
 
 ## Inputs
 
@@ -69,7 +69,7 @@ during [optimize archr](optimize-archr.md) to configure this run.
 | `lsi_resolution` | float | `0.5` | `clusterParams` resolution for `addIterativeLSI`. |
 | `lsi_varfeatures` | int | `25000` | `varFeatures` for `addIterativeLSI`. |
 | `clustering_resolution` | float | `1.0` | `resolution` for `addClusters`. |
-| `output_dir` | LatchDir | `latch:///atac_analysis_archr/` | Output location. |
+| `output_dir` | LatchDir | `latch:///epi_analysis_archr/` | Output location. |
 
 ??? note "Hidden / advanced parameters"
     | Parameter | Default | Description |
@@ -87,16 +87,17 @@ during [optimize archr](optimize-archr.md) to configure this run.
 
 ## Outputs
 
-Loaded into Latch Data under `latch:///atac_analysis_archr/<project_name>/` (or your
+Loaded into Latch Data under `latch:///epi_analysis_archr/<project_name>/` (or your
 chosen `output_dir`). Open the whole result in Plots via the included
 `Launch_Plots/artifact.json`.
 
 ```text
-atac_analysis_archr/<project_name>/
+epi_analysis_archr/<project_name>/
 ├── <project_name>_ArchRProject/            # Arrow files, peak sets, motif annotations, bigWigs
 ├── seurat_objects/                         # all Seurat .rds objects
 │   ├── <run_id>_SeuratObj.rds, combined.rds        # gene-accessibility
 │   ├── <run_id>_SeuratObjMotif.rds, combined_m.rds # motif-deviation
+│   ├── <run_id>_BP/                                # only for very large projects
 │   └── seqlogo.rds
 ├── anndata/                                # all AnnData .h5ad objects
 │   └── *_converted.h5ad, combined_*.h5ad
@@ -117,7 +118,21 @@ atac_analysis_archr/<project_name>/
 | `anndata/<run_id>_g_converted.h5ad` / `anndata/<run_id>_m_converted.h5ad` | Per-run AnnData conversions of the gene / motif objects. |
 | `anndata/combined_ge.h5ad`, `anndata/combined_motifs.h5ad` | **Full** combined gene-accessibility and motif-deviation AnnData objects — use these for any downstream calculation. |
 | `anndata/combined_sm_ge.h5ad`, `anndata/combined_sm_motifs.h5ad` | **Reduced (`_sm`)** versions for [Latch Plots](plots.md) — see the note below. |
+| `seurat_objects/<run_id>_BP/` | [BPCells](https://bnprks.github.io/BPCells/) on-disk matrix stores backing the combined Seurat objects. **Only present on very large projects** — see the note below. |
 | `seurat_objects/seqlogo.rds` | Position weight matrices for motif sequence logos. |
+
+!!! note "`_BP/` directories on large projects"
+    R's sparse matrices cap out at `2^31 - 1` non-zero entries. When the combined
+    count matrix exceeds that, it can't be held in memory as a normal sparse
+    matrix, so the Workflow writes each Run's counts to a **BPCells on-disk
+    store** at `seurat_objects/<run_id>_BP/` and builds `combined.rds` against
+    those instead.
+
+    These directories are **part of the Seurat object, not scratch space**:
+    `combined.rds` references them by path, so a combined object built this way
+    will fail to load if the `_BP/` directories aren't alongside it. Download or
+    move `seurat_objects/` as a unit. Most projects never hit the threshold and
+    won't have them.
 
 !!! warning "Don't compute on the reduced (`_sm`) objects"
     The `_sm` objects are built for fast loading in [Plots](plots.md): `clean_adata`

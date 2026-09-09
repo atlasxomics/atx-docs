@@ -26,20 +26,26 @@ Transcriptome Plots loads a **single AnnData `.h5ad`** — the reduced
 that opens its result directly in this Plots template.
 
 !!! note "Reduced object"
-    `combined_sm.h5ad` is the visualization-optimized object (`.X` cast to
-    `float16`; raw counts / layers stripped). It's the right input for Plots, but
-    **not** for downstream computation — see the
+    `combined_sm.h5ad` is the visualization-optimized object: `.X` holds the
+    log1p-normalized matrix (`float32`, sparse) and raw counts are kept in
+    `layers["counts"]`, but the PCA / neighbor graphs and most QC metadata are
+    stripped. It's the right input for Plots; for re-clustering or anything
+    needing what was dropped, use the full `combined.h5ad` — see the
     [note on the optimize_wt page](optimize-wt.md#outputs).
 
 ## Starting Plots
 
-1. **Launch from the Workflow output (recommended).** In Latch Data, open the
-   `rna_analysis/<project>/` output folder and use its **`Launch_Plots/artifact.json`**
-   / *Open in Plots* action to start a notebook **pre-loaded** with the data.
+1. **Launch from the Workflow output (recommended).** optimize_wt writes one
+   folder **per parameter set**, each with its own artifact — so first pick a set
+   from the top-level `all_umaps.html` / `all_spatialdim.html` galleries. Then in
+   Latch Data open that set's folder under `rna_analysis/<project>/` (e.g.
+   `set1_backend-scanpy_cr1-0-nc30-nn15-md0-5-sp1-0/`) and use its
+   **`Launch_Plots/artifact.json`** / *Open in Plots* action to start a notebook
+   **pre-loaded** with that set's data.
 2. **Open Plots and select data manually.** Start a new notebook from the
    **Plots** module in the Latch Console, then use the **Select Data** tab to
-   point it at `combined_sm.h5ad`. Setting a data path (re)initializes every
-   other tab.
+   point it at the chosen set's `combined_sm.h5ad`. Setting a data path
+   (re)initializes every other tab.
 
 ## Plotting modules
 

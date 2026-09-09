@@ -6,27 +6,33 @@
     **Modality:** Epigenomics · **Stage:** Secondary Analysis
 
 ```mermaid
-flowchart LR
-    ADATA["make_adata<br/>combined AnnData"]:::process
+flowchart TB
+    DATASET["make_anndata_dataset_task<br/>backed dataset"]:::process
+    ADATA["make_adata<br/>tiles + clusters"]:::process
+    GPROJ["gene_project_task<br/>ArchR gene project"]:::process
     GENES["genes_task<br/>gene accessibility"]:::process
     COMBINE["combine_gene_h5ads_task<br/>merge gene AnnData"]:::process
-    MOTIFS["motifs_task<br/>motif enrichment"]:::process
-    STATS["gene_stats_task<br/>gene statistics"]:::process
+    GSPATIAL["gene_spatial_task<br/>spatial analysis"]:::process
+    MCOV["motif_coverages_task<br/>group coverages"]:::process
+    MPEAKS["motif_peaks_task<br/>peaks + annotations"]:::process
+    MOTIFS["motifs_task<br/>motif deviations"]:::process
+    STATS["gene_stats_task<br/>differential testing"]:::process
     DONE["complete_results_task<br/>final bundle"]:::process
+    CLEAN["cleanup_checkpoints_task<br/>remove intermediates"]:::process
 
-    ADATA --> GENES
-    GENES --> COMBINE
-    GENES --> MOTIFS
-    COMBINE --> STATS
-    STATS --> DONE
-    MOTIFS --> DONE
+    DATASET --> ADATA --> GPROJ --> GENES
+    GENES --> COMBINE --> GSPATIAL
+    GENES --> MCOV --> MPEAKS --> MOTIFS
+    GENES --> STATS
+    GSPATIAL --> STATS
+    GSPATIAL & MOTIFS & STATS --> DONE --> CLEAN
 
     classDef process stroke:#818cf8,fill:#eef2ff
 ```
 
 <p style="text-align:center;font-size:0.75rem;opacity:0.7;margin-top:-0.5rem">
-Workflow task DAG — the combined AnnData feeds gene, motif, and statistics tasks,
-which are assembled into the final bundle. (Internal Registry upload omitted.)
+Workflow task DAG — the gene and motif branches run from the shared gene project
+and rejoin in the final bundle. (Internal Registry upload omitted.)
 </p>
 
 ## Overview
@@ -66,9 +72,14 @@ The two sides communicate **through files**, not a live bridge:
 
 ## Steps
 
-The tasks run in sequence, each enriching the results directory.
+The tasks run in sequence, each enriching the results directory. The pipeline is
+split into **fine-grained checkpointed stages** — see
+[Checkpoints](#checkpoints-and-recovery) below.
 
-1. **`make_adata`** *(SnapATAC2 / Python)* — Builds the combined cell-by-tile
+1. **`make_anndata_dataset_task`** *(SnapATAC2 / Python)* — Creates and uploads
+   the backed multi-sample AnnData dataset as its own stage, so the expensive
+   per-Run object creation is never repeated by a later failure.
+2. **`make_adata`** *(SnapATAC2 / Python)* — Builds the combined cell-by-tile
    AnnData. Bins the genome into fixed-width tiles and counts fragments per tile
    (`tile_size`), filters low-quality cells (`min_tss`, `min_frags`), and selects
    the most accessible tiles as features (`n_features`). It then reduces
@@ -77,7 +88,11 @@ The tasks run in sequence, each enriching the results directory.
    `clustering_iters`, `leiden_iters`, `min_cluster_size`), and attaches each
    tixel's spatial coordinates. These clusters are the grouping used by every
    later step.
-2. **`genes_task`** *(ArchR / R)* — Computes **gene-accessibility scores** with
+3. **`gene_project_task`** *(ArchR / R)* — Builds the checkpointed ArchR gene
+   project from the fragments and the SnapATAC2 cluster labels. Isolating this
+   means the gene-score computation that follows can be retried without
+   rebuilding the project.
+4. **`genes_task`** *(ArchR / R)* — Computes **gene-accessibility scores** with
    ArchR's `GeneScoreMatrix` model. For each gene, ATAC signal (Tn5 insertions)
    across the gene body and a surrounding regulatory window is summed with
    **exponential distance weighting** from the gene — closer, more accessible
@@ -86,9 +101,21 @@ The tasks run in sequence, each enriching the results directory.
    cells with imputation weights, yielding a cells × genes matrix that serves as
    a **proxy for gene expression**: it lets you identify cell types from marker
    genes and compare the epigenome on a gene-level, expression-like scale.
-3. **`combine_gene_h5ads_task`** *(Python)* — Merges the per-Run gene-accessibility
-   results into a single combined cell-by-gene object spanning all Runs.
-4. **`motifs_task`** *(ArchR / R)* — Computes **motif deviations** using
+5. **`combine_gene_h5ads_task`** *(Python)* — Merges the per-Run gene-accessibility
+   results into a single combined cell-by-gene object spanning all Runs, saved as
+   a durable dense checkpoint (`combined_g_pre_squidpy.h5ad`).
+6. **`gene_spatial_task`** *(Squidpy / Python)* — Runs the **spatial analysis** on
+   the combined gene object: attaches the UMAP and spatial coordinates, computes
+   **neighborhood enrichment** over the spatial neighbor graph (precomputed per
+   sample and condition as well as overall), and identifies **spatially variable
+   genes** by spatial autocorrelation (Moran's I) → `tables/svg_genes.csv` and
+   `figures/svg_spatial_genes.*`. It runs *after* the dense checkpoint
+   deliberately, so a failure here never repeats the combination step.
+7. **`motif_coverages_task`** *(ArchR / R)* — Generates the per-cluster group
+   **coverage** checkpoint (the bedgraph tracks the peak caller needs).
+8. **`motif_peaks_task`** *(ArchR / R)* — Calls **peaks** from those coverages and
+   builds the genome-specific **motif annotations**.
+9. **`motifs_task`** *(ArchR / R)* — Computes **motif deviations** using
    [chromVAR](https://greenleaflab.github.io/chromVAR/) (via ArchR's
    `addDeviationsMatrix`). For each transcription-factor motif, it aggregates
    accessibility across all peaks that contain the motif and compares it to a set
@@ -96,15 +123,32 @@ The tasks run in sequence, each enriching the results directory.
    producing a per-cell, bias-corrected **deviation z-score**. High deviation
    means a TF's binding sites are more accessible than expected in that cell — a
    proxy for **TF regulatory activity** — which can then be summarized per
-   cluster to find the regulators that distinguish cell populations.
-5. **`gene_stats_task`** *(ArchR / R)* — Runs **differential testing per cluster**
-   to identify cluster-specific **marker genes** and gene-level statistics.
-6. **`complete_results_task`** *(Python)* — Assembles the base, gene,
-   gene-expression, gene-stats, and motif outputs into the final results bundle.
+   cluster to find the regulators that distinguish cell populations. It also
+   emits `seqlogo.rds` (see [Motif outputs](#motif-outputs)) and preserves
+   ArchR's peak-call reports before the checkpoint holding them is removed.
+10. **`gene_stats_task`** *(ArchR / R)* — Runs **differential testing per cluster**
+    to identify cluster-specific **marker genes** and gene-level statistics.
+11. **`complete_results_task`** *(Python)* — Assembles the base, gene,
+    gene-expression, gene-stats, and motif outputs into the final results bundle.
+12. **`cleanup_checkpoints_task`** *(Python)* — Removes the durable
+    intermediates, but only **after every result branch has succeeded**.
 
 !!! note "Internal step"
     A final `registry_task` writes outputs to the Latch Registry (see
     [Internal Tasks](../reference/glossary.md#internal-atx-only-tasks)).
+
+### Checkpoints and recovery
+
+The heavy stages write **durable intermediates** to a `checkpoints/` directory
+while the Workflow runs. Each expensive step — dataset creation, the ArchR gene
+project, the combined dense gene object, the group coverages, the peak and motif
+annotations — is checkpointed so that a failure in a later stage doesn't force
+the earlier ones to be recomputed.
+
+`checkpoints/` is **automatically deleted once every result-producing task
+succeeds**, so you won't normally see it in a completed run. After a **failed**
+execution it remains in place for recovery — which is why a re-run of a failed
+project can be dramatically faster than the original.
 
 ## Inputs
 
@@ -128,7 +172,7 @@ The tasks run in sequence, each enriching the results directory.
 | `n_comps` | int | `30` | Spectral-embedding dimensions. |
 | `resolution` | float | `1.0` | Leiden clustering resolution. |
 | `clustering_iters` | int | `1` | Iterative feature-selection rounds. |
-| `output_dir` | LatchDir | `latch:///atac_analysis_snap/` | Output location. |
+| `output_dir` | LatchDir | `latch:///epi_analysis_snap/` | Output location. |
 
 ??? note "Hidden / advanced parameters"
     | Parameter | Default | Description |
@@ -141,7 +185,7 @@ The tasks run in sequence, each enriching the results directory.
 
 ## Outputs
 
-Written to `latch:///atac_analysis_snap/<project_name>/` (or your chosen
+Written to `latch:///epi_analysis_snap/<project_name>/` (or your chosen
 `output_dir`). ATX_snap produces the **same analysis-table set as
 [create ArchRProject](create-archrproject.md)** — grouped by cluster, sample, and
 condition — computed here with SnapATAC2 / Scanpy. AnnData `.h5ad` objects are
@@ -149,14 +193,16 @@ collected under `anndata/` and Seurat `.rds` objects under `seurat_objects/`.
 Open the whole result in Plots via the included `Launch_Plots/artifact.json`.
 
 ```text
-atac_analysis_snap/<project_name>/
+epi_analysis_snap/<project_name>/
 ├── anndata/
 │   ├── combined.h5ad
 │   ├── combined_ge.h5ad, combined_motifs.h5ad          # full
 │   ├── combined_sm_ge.h5ad, combined_sm_motifs.h5ad    # reduced (Plots only)
 │   └── <run_id>_g_converted.h5ad, <run_id>_m_converted.h5ad
 ├── seurat_objects/
-│   └── <run_id>_SeuratObj.rds, <run_id>_SeuratObjMotif.rds
+│   ├── <run_id>_SeuratObj.rds, <run_id>_SeuratObjMotif.rds
+│   └── seqlogo.rds
+├── {cluster,sample,condition}_coverage/    # bedgraph browser tracks
 ├── peaks.bed
 ├── filtering_summary.csv
 ├── tables/                    # analysis tables + medians, params, embeddings, SVGs
@@ -173,7 +219,18 @@ atac_analysis_snap/<project_name>/
 | `anndata/combined_sm_ge.h5ad`, `anndata/combined_sm_motifs.h5ad` | **Reduced (`_sm`)** versions for [Latch Plots](plots.md) — see the note below. |
 | `seurat_objects/<run_id>_SeuratObj.rds` / `seurat_objects/<run_id>_SeuratObjMotif.rds` | Per-run gene-accessibility and motif-deviation Seurat objects. |
 | `anndata/<run_id>_g_converted.h5ad` / `anndata/<run_id>_m_converted.h5ad` | Per-run AnnData conversions. |
+| `seurat_objects/seqlogo.rds` | Motif position weight matrices for sequence logos — see [Motif outputs](#motif-outputs). |
+| `<group>_coverage/` | Bedgraph coverage tracks grouped by **cluster**, **sample**, or **condition**. These are viewable natively as browser tracks in Latch Data. |
 | `peaks.bed` | Called peaks for the project. |
+
+### Motif outputs
+
+`seurat_objects/seqlogo.rds` holds the motif **probability matrices** used to
+draw sequence logos, generated from the genome-specific ArchR motif annotation
+(including the mouse CIS-BP motifs for `mm39`). It pairs with the motif
+deviation and enrichment tables: the tables tell you *which* TF motifs
+distinguish a group, and `seqlogo.rds` lets you render what those motifs
+actually look like.
 
 !!! warning "Don't compute on the reduced (`_sm`) objects"
     The `_sm` objects are built for fast loading in [Plots](plots.md): `clean_adata`
@@ -228,7 +285,16 @@ also produced).
 | `tables/obs.csv`, `tables/spatial.csv`, `tables/X_umap.csv`, `tables/spectral.csv` | Per-cell metadata, spatial coordinates, UMAP embedding, and SnapATAC2 spectral embedding. |
 | `tables/svg_genes.csv`, `tables/svg_motifs.csv` | Spatial-autocorrelation results for spatially variable genes and motifs. |
 | `filtering_summary.csv` | Cell-filtering summary (cells kept / removed per Run). |
-| `figures/` | Heatmaps (`heatmap_genes.pdf`, `motifs.pdf`), spatial and QC plots (`spatial_dim`, `spatial_qc`, `qc_plots.pdf`), spatially variable gene maps (`svg_spatial_genes`), and neighborhood plots (`*_neighborhoods.pdf`), as PDF / PNG / HTML. |
+| `tables/*Peak-Call-Summary.csv` | ArchR's peak-calling summary tables (e.g. `Clusters_Peak-Call-Summary.csv`), preserved from the peak checkpoint before it is cleaned up. |
+| `figures/` | Heatmaps (`heatmap_genes.pdf`, `motifs.pdf`), spatial and QC plots (`spatial_dim`, `spatial_qc`, `qc_plots.pdf`), spatially variable gene maps (`svg_spatial_genes`), and neighborhood plots (`all_neighborhoods.pdf`), as PDF / PNG / HTML. Also includes ArchR's peak-calling PDF reports, preserved from the peak checkpoint. |
+
+!!! note "ArchR reports promoted from the checkpoint"
+    Peak calling happens inside a checkpoint task whose large ArchRProject is
+    deleted on success. Before that cleanup, the Workflow copies ArchR's small
+    reports out of it — every `.csv` into `tables/` and every `.pdf` into
+    `figures/`. Where two ArchR subdirectories use the same filename, the later
+    one is prefixed with its parent path (`<parent>__<name>`) so neither report
+    is lost.
 | `Launch_Plots/artifact.json` | Latch Plots artifact metadata for opening the result in the AtlasXomics Plots template. |
 
 ## Example run

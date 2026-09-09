@@ -111,10 +111,10 @@ parallel**.
 
 ## Outputs
 
-Written to `latch:///atac_optimize_archr/<project_name>/`.
+Written to `latch:///epi_optimize_archr/<project_name>/`.
 
 ```text
-atac_optimize_archr/<project_name>/
+epi_optimize_archr/<project_name>/
 ├── medians.csv                     # per-run QC medians
 ├── figures/
 │   ├── umap_plots_<NNN>.png        # one page per parameter set
@@ -136,7 +136,7 @@ atac_optimize_archr/<project_name>/
 | `cluster_csvs/*_bc-clusters.csv` | Barcode→cluster assignments for each parameter set. |
 
 Intermediate artifacts (the shared base ArchRProject and per-set outputs) are
-kept under `latch:///atac_optimize_archr/<project_name>/_intermediate/`. Use the
+kept under `latch:///epi_optimize_archr/<project_name>/_intermediate/`. Use the
 galleries and cluster tables to choose the parameter set to carry into
 [create ArchRProject](create-archrproject.md).
 

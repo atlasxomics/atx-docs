@@ -6,7 +6,7 @@ Latch.
 Workspaces are organized **by Workflow output**: each top-level directory holds
 the results of one Workflow, and within it each project or run gets its own
 subdirectory. Directory names encode the **modality** and **stage** — for
-example `atac_optimize_archr/` holds ATAC (epigenomic) optimization results
+example `epi_optimize_archr/` holds ATAC (epigenomic) optimization results
 produced with ArchR.
 
 ## Workspace layout
@@ -18,11 +18,11 @@ produced with ArchR.
 ├── fastq2frags/                     # ATAC: FASTQ → fragments
 ├── cram2frags/                      # ATAC: CRAM → fragments
 │
-├── atac_optimize_archr/             # ATAC: parameter sweep (ArchR)
-├── atac_optimize_snap/              # ATAC: parameter sweep (SnapATAC2)
+├── epi_optimize_archr/             # ATAC: parameter sweep (ArchR)
+├── epi_optimize_snap/              # ATAC: parameter sweep (SnapATAC2)
 │
-├── atac_analysis_archr/             # ATAC: secondary analysis (ArchR)
-├── atac_analysis_snap/              # ATAC: secondary analysis (SnapATAC2)
+├── epi_analysis_archr/             # ATAC: secondary analysis (ArchR)
+├── epi_analysis_snap/              # ATAC: secondary analysis (SnapATAC2)
 ├── compare_outs/                    # ATAC: differential comparisons
 │
 ├── rna_preprocessing/               # RNA: alignment + QC
@@ -38,10 +38,10 @@ produced with ArchR.
 | `spatials/` | [AtlasXBrowser](tools/atlasxbrowser.md) | The [Spatial folder](reference/glossary.md#spatial-folder) per run — tissue images, `tissue_positions_list.csv`, and metadata. |
 | `fastq2frags/` | [ATX epigenomic preprocessing](epigenomics/preprocessing.md) | Filtered FASTQs, Chromap alignment, the **fragments file**, and QC metrics/reports. |
 | `cram2frags/` | [cram2frags](epigenomics/helpers/cram2frags.md) | Fragments produced from CRAM input (e.g. Ultima runs) rather than FASTQ. |
-| `atac_optimize_archr/` | [optimize archr](epigenomics/optimize-archr.md) | Parameter-sweep comparison figures and metrics (ArchR). |
-| `atac_optimize_snap/` | [optimize_snap](epigenomics/optimize-snap.md) | Parameter-sweep comparison figures and metrics (SnapATAC2). |
-| `atac_analysis_archr/` | [create ArchRProject](epigenomics/create-archrproject.md) | The ArchRProject, Seurat/AnnData objects, coverage tracks, peak BEDs, and analysis tables from ArchR. |
-| `atac_analysis_snap/` | [ATX_snap](epigenomics/atx-snap.md) | Combined AnnData, gene-accessibility and motif results, and analysis tables from SnapATAC and ArchR. |
+| `epi_optimize_archr/` | [optimize archr](epigenomics/optimize-archr.md) | Parameter-sweep comparison figures and metrics (ArchR). |
+| `epi_optimize_snap/` | [optimize_snap](epigenomics/optimize-snap.md) | Parameter-sweep comparison figures and metrics (SnapATAC2). |
+| `epi_analysis_archr/` | [create ArchRProject](epigenomics/create-archrproject.md) | The ArchRProject, Seurat/AnnData objects, coverage tracks, peak BEDs, and analysis tables from ArchR. |
+| `epi_analysis_snap/` | [ATX_snap](epigenomics/atx-snap.md) | Combined AnnData, gene-accessibility and motif results, and analysis tables from SnapATAC and ArchR. |
 | `compare_outs/` | [compare clusters](epigenomics/compare-clusters.md) | Differential gene, peak, and motif results between user-specified groups. |
 | `rna_preprocessing/` | [RNAQC](transcriptome/rnaqc.md) | STARsolo alignment, the gene-expression matrix, MultiQC report, and contamination screen. |
 | `rna_analysis/` | [optimize_wt](transcriptome/optimize-wt.md) | Clustered AnnData, marker genes, spatially variable genes, and figures. |
