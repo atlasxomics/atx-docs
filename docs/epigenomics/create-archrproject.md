@@ -1,7 +1,7 @@
 # create ArchRProject
 
 !!! info "At a glance"
-    **Repository:** [atlasxomics/archrproject](https://github.com/atlasxomics/archrproject) ·
+    **Repository:** [atlasxomics/archrproject_latch](https://github.com/atlasxomics/archrproject_latch) ·
     **Display name:** create ArchRProject ·
     **Modality:** Epigenomics · **Stage:** Secondary Analysis
 

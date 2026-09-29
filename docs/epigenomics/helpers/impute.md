@@ -1,7 +1,7 @@
 # ATX impute
 
 !!! info "At a glance"
-    **Repository:** [atlasxomics/impute](https://github.com/atlasxomics/impute) ·
+    **Repository:** [atlasxomics/ATX_impute](https://github.com/atlasxomics/ATX_impute) ·
     **Display name:** ATX impute ·
     **Modality:** Epigenomics · **Stage:** Helper Workflow
 

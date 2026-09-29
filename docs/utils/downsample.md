@@ -1,7 +1,7 @@
 # downsample reads
 
 !!! info "At a glance"
-    **Repository:** [atlasxomics/downsample](https://github.com/atlasxomics/downsample) ·
+    **Repository:** [atlasxomics/downsample_latch](https://github.com/atlasxomics/downsample_latch) ·
     **Display name:** downsample reads ·
     **Modality:** Platform · **Stage:** Utility
 

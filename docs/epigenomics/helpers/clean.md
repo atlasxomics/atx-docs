@@ -1,7 +1,7 @@
 # clean
 
 !!! info "At a glance"
-    **Repository:** [atlasxomics/clean](https://github.com/atlasxomics/clean) ·
+    **Repository:** [atlasxomics/clean_latch](https://github.com/atlasxomics/clean_latch) ·
     **Display name:** clean ·
     **Modality:** Epigenomics · **Stage:** Helper Workflow
 

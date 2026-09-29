@@ -1,7 +1,7 @@
 # optimize archr
 
 !!! info "At a glance"
-    **Repository:** [atlasxomics/archr](https://github.com/atlasxomics/archr) ·
+    **Repository:** [atlasxomics/archr_latch](https://github.com/atlasxomics/archr_latch) ·
     **Display name:** optimize archr ·
     **Modality:** Epigenomics · **Stage:** Optimization
 
