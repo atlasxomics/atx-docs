@@ -97,6 +97,47 @@ Terms that are obscure or specific to AtlasXomics.
 
     See the [AtlasXBrowser Spatial Folder docs](https://atlasxbrowser-docs.readthedocs.io/en/latest/SpatialFolder.html).
 
+<a id="anndata"></a>
+**AnnData** (`.h5ad`)
+: The Python analysis object used throughout ATX secondary analysis — a feature
+  matrix `.X` with aligned annotations: `obs` (per-cell/[tixel](#tixel)),
+  `var` (per-feature), `obsm` (embeddings, incl. `spatial` and `X_umap`),
+  `layers` (alternate matrices), and `uns` (unstructured results). Rows are
+  tixels, not cells, in spatial data. ATX Workflows collect them in an
+  **`anndata/`** subfolder of the output.
+
+    **What `.X` holds depends on the object** — this is the usual source of
+    confusion, since the file name, not the format, tells you what you have:
+
+    | Object | `.X` |
+    |---|---|
+    | `combined.h5ad` | Tile (bin) or peak counts — the raw accessibility matrix. |
+    | `combined_ge.h5ad` | Gene-accessibility scores (a proxy for expression). |
+    | `combined_motifs.h5ad` | Per-cell TF motif deviation z-scores. |
+    | `<run_id>_g_converted.h5ad` / `_m_converted.h5ad` | Per-Run gene / motif objects, converted from Seurat. |
+
+<a id="sm-object"></a>
+**`_sm` object** (reduced AnnData)
+: An AnnData copy built for **fast loading in [Plots](../epigenomics/plots.md)**,
+  written alongside the full object (`combined_sm_ge.h5ad`,
+  `combined_sm_motifs.h5ad`, `combined_sm.h5ad`). It keeps the feature matrix,
+  the UMAP embedding, and spatial coordinates, and drops what plotting doesn't
+  need — `.raw`, most `layers` and `varm`, the PCA / neighbor graphs, and the QC
+  `obs` / `var` columns.
+
+    **Treat `_sm` as visualization-only.** Use the full object for differential
+    testing, marker detection, re-clustering, or anything else computational.
+    How much precision is lost depends on the modality:
+
+    | Workflow | `_sm` matrix |
+    |---|---|
+    | [ATX_snap](../epigenomics/atx-snap.md), [create ArchRProject](../epigenomics/create-archrproject.md) | `float16` — counts lose precision and are no longer exact. |
+    | [atx_SpatialGlue](../coprofiling/atx-glue.md) | `float16`, densified. |
+    | [optimize_wt](../transcriptome/optimize-wt.md) | `float32` and sparse, with exact raw counts retained in `layers["counts"]`; `.X` is the log1p-normalized matrix, its source recorded in `uns["plotting_x_source"]`. |
+
+    The transcriptome `_sm` is therefore numerically exact — but still
+    *incomplete*, so the rule above holds for it too.
+
 **ArchRProject**
 : The [ArchR](https://www.archrproject.com/) analysis object bundling fragments,
   QC, dimensionality reduction, and clustering for a set of Runs.
