@@ -50,7 +50,7 @@ and feeds the [optimization](optimize-archr.md) and
    [bbduk](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/). Reads
    with more than 3 mismatches in linker 1 or linker 2 are removed (each can be
    skipped independently). Supports optional
-   [cleaning](../reference/glossary.md#cleaning) /
+   [CLEAN](../tools/clean.md) /
    [cross-talk correction](../reference/glossary.md#cross-talk-correction) and
    [bulk](../reference/glossary.md#bulk-mode) /
    [no-ligation-bulk](../reference/glossary.md#no-ligation-bulk-mode) modes.
@@ -89,8 +89,8 @@ and feeds the [optimization](optimize-archr.md) and
 | `bulk`, `noLigation_bulk` | bool | [Bulk](../reference/glossary.md#bulk-mode) / [no-ligation-bulk](../reference/glossary.md#no-ligation-bulk-mode) processing modes (non-spatial runs). |
 | `skip1`, `skip2` | bool | Skip linker 1 / linker 2 filtering. |
 | `blacklist_filtering` | bool | Apply blacklist filtering. |
-| `cleaning`, `xtalk_correction` | bool | Apply cleaning / cross-talk correction. |
-| `ds_table` | LatchFile | Correction table (cleaning / cross-talk). |
+| `cleaning`, `xtalk_correction` | bool | Apply [CLEAN](../tools/clean.md) / cross-talk correction. |
+| `ds_table` | LatchFile | Correction table ([CLEAN](../tools/clean.md) / cross-talk) — the `cleanTable.csv` from [BarcodeQC](../tools/barcodeqc.md). |
 | `xtalk_threshold` | float | Cross-talk fold threshold. |
 
 *(Internal-only parameters — `upload_to_slims`, `ng_id`, `table_id`,

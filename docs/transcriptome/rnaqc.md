@@ -33,14 +33,14 @@ check and an optional clustering-parameter sweep. Its `<sample>_star/` output
 feeds the [optimize_wt](optimize-wt.md) secondary analysis.
 
 Like [epigenomic preprocessing](../epigenomics/preprocessing.md), RNAQC supports
-optional [cleaning](../reference/glossary.md#cleaning) and
+optional [CLEAN](../tools/clean.md) and
 [cross-talk correction](../reference/glossary.md#cross-talk-correction) via a
 `ds_table` correction table.
 
 ## Steps
 
 1. **`qc_task`** — The core QC step. Processes barcodes from read 2
-   (`fastq-processor-mp-plusFuz_v3.py`), optionally applies cleaning /
+   (`fastq-processor-mp-plusFuz_v3.py`), optionally applies CLEAN /
    cross-talk correction, aligns with **STARsolo** (`rnaqc.py` +
    `rnaQC_v7_wf.yaml`), and collates metrics (`collate_metrics.py`) into the
    `<sample>_star/` output directory and a MultiQC report.
@@ -68,13 +68,13 @@ optional [cleaning](../reference/glossary.md#cleaning) and
 | `run_optimize` | bool | `False` | Run the optional clustering sweep (step 3). |
 | `output_directory` | LatchDir | `latch:///rna_preprocessing` | Output location. |
 
-??? note "Cleaning / cross-talk correction"
+??? note "CLEAN / cross-talk correction"
     | Parameter | Default | Description |
     |---|---|---|
-    | `cleaning` | `False` | Apply [cleaning](../reference/glossary.md#cleaning) (needs a `ds_table` with `mer`, `finalDownFract`). |
+    | `cleaning` | `False` | Apply [CLEAN](../tools/clean.md) (needs a `ds_table` with `mer`, `finalDownFract`). |
     | `xtalk_correction` | `False` | Apply [cross-talk correction](../reference/glossary.md#cross-talk-correction) (needs a `ds_table` with `mer`, `row`, `col`, `xtalk_mask`, `fold_above_background`). |
     | `xtalk_threshold` | `2.0` | Minimum `fold_above_background` for correction. |
-    | `ds_table` | — | The cleaning / cross-talk correction table. |
+    | `ds_table` | — | The [CLEAN](../tools/clean.md) / cross-talk correction table. |
     | `seed` | `100` | Random seed (downsampling). |
 
 ??? note "Optimization-sweep parameters (used when `run_optimize`)"

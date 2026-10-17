@@ -15,11 +15,16 @@
    their spatial distribution, so you can spot failed lanes and low-quality runs
    up front.
 2. **Correction tables** — it detects microfluidic artifacts and generates the
-   [cleaning](../reference/glossary.md#cleaning) /
+   [CLEAN](clean.md) /
    [cross-talk correction](../reference/glossary.md#cross-talk-correction) tables
    (`cleanTable.csv`) that preprocessing consumes as its `ds_table`.
 
-Running BarcodeQC **before** preprocessing is what lets the cleaning / cross-talk
+BarcodeQC performs the **detection** half of [CLEAN](clean.md): it flags the
+affected rows and columns and records each tixel's **downsampling fraction**.
+The **correction** half — downsampling reads into a CLEANed FASTQ — happens
+during preprocessing.
+
+Running BarcodeQC **before** preprocessing is what lets the CLEAN / cross-talk
 steps run inline during preprocessing rather than as a later remediation loop
 (see the [Epigenomics overview](../epigenomics/index.md#how-the-workflows-fit-together)).
 
@@ -27,7 +32,7 @@ steps run inline during preprocessing rather than as a later remediation loop
 
 1. **`bc_task`** — Matches read-2 barcodes against the selected barcode set's
    k-mer whitelist (`merChecker`), builds the per-barcode spatial table, then
-   runs the detection / cleaning scripts (`detectNclean_v1`,
+   runs the [CLEAN](clean.md) detection scripts (`detectNclean_v1`,
    `detectNClean_smoothSlice_v2` across several extension / patch variants) to
    flag outlier rows/columns and produce the correction table and spatial QC
    plots. Reads are downsampled to `outReads` first.
@@ -53,7 +58,7 @@ Written to `output_directory` (default `latch:///bcQC_output/`), under a
 bcQC_output/
 └── <sample>/
     ├── <sample>_report.html            # interactive barcode QC report
-    ├── <sample>_cleanTable.csv         # cleaning / cross-talk correction table (preprocessing ds_table)
+    ├── <sample>_cleanTable.csv         # CLEAN / cross-talk correction table (preprocessing ds_table)
     ├── <sample>_spatialTable.csv       # per-barcode spatial counts
     ├── <sample>_bcSpatial*.png         # barcode-density spatial heatmaps
     ├── <sample>_plate_map.html/.png, _pareto.html, _barplot.html, _denseOnOff.html/.png
@@ -64,11 +69,11 @@ bcQC_output/
 | File | Description |
 |---|---|
 | `<sample>_report.html` | Interactive barcode QC report — match rates, spatial distribution, and warnings. |
-| `<sample>_cleanTable.csv` | The correction table (`mer`, `finalDownFract`) used as the preprocessing **`ds_table`** for [cleaning](../reference/glossary.md#cleaning). |
+| `<sample>_cleanTable.csv` | The [CLEAN](clean.md) correction table — `mer` and `finalDownFract` (each tixel's **downsampling fraction**) — used as the preprocessing **`ds_table`**. |
 | `<sample>_spatialTable.csv` | Per-barcode spatial counts. |
 | `<sample>_bcSpatial*.png` | Barcode-density spatial heatmaps (raw, 2× mean, 95th percentile). |
 | `<sample>_hiLoWarn.csv` / `.png` | Flagged high / low outlier rows and columns. |
-| `clean_v1_outputs/`, `clean_v2_*_outputs/` | Per-variant detection / cleaning intermediates. |
+| `clean_v1_outputs/`, `clean_v2_*_outputs/` | Per-variant [CLEAN](clean.md) detection intermediates. |
 
 ## CLI
 

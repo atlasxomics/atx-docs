@@ -42,6 +42,7 @@ Terms that are obscure or specific to AtlasXomics.
   sequences **added** and random barcodes assigned. Enabled via the
   `noLigation_bulk` toggle.
 
+<a id="cross-talk"></a>
 **cross-talk**
 : In DBiT-seq, spatial barcodes are delivered through microfluidic channels
   (one set of channels for rows, another for columns). **Cross-talk** is
@@ -63,17 +64,32 @@ Terms that are obscure or specific to AtlasXomics.
   diagonals, up to distance 2); positions with no clean neighbor in range are
   left untouched. Enabled via the `xtalk_correction` toggle.
 
-<a id="cleaning"></a>
-**cleaning**
-: A [preprocessing](../epigenomics/preprocessing.md) step that remediates
-  microfluidic **intensity** artifacts (as opposed to the positional bleed-
-  through handled by [cross-talk correction](#cross-talk-correction)).
-  Over-represented barcodes / [tixels](#tixel) are randomly downsampled toward
-  the local background using a `cleanTable.csv` (columns `mer`,
-  `finalDownFract` — the fraction each barcode is downsampled to), generated in
-  [BarcodeQC](../tools/barcodeqc.md). Enabled via the `cleaning` toggle. The
-  standalone [clean](../epigenomics/helpers/clean.md) Workflow applies a related
-  row/column outlier-downsampling directly to a fragments file.
+<a id="cleaning"></a><a id="clean"></a>
+**CLEAN** (cleaning)
+: **Channel-Linked Efficiency Artifact Normalization** — the correction for
+  microfluidic **intensity** artifacts, where some channels capture more
+  efficiently than others and their rows/columns show abnormally high signal.
+  (Distinct from the positional bleed-through handled by
+  [cross-talk correction](#cross-talk-correction).)
+
+    Affected rows and columns are flagged by comparing each one's summed counts
+    to a **lowess**-smoothed trend — anything whose **normalized difference**
+    `(actual − smoothed) / actual` falls outside ±0.5 is flagged. Together the
+    flagged rows and columns form a **mask**; each masked
+    [tixel](#tixel) gets a
+    **downsampling fraction** from the average of its unaffected neighbors, and
+    its reads are downsampled accordingly to produce a **CLEANed FASTQ**.
+    Unaffected tixels are untouched. A **regional** variant runs the same
+    detection within 1/16 sub-regions of the array, for artifacts that span only
+    part of a row or column.
+
+    In the pipeline, detection happens in [BarcodeQC](../tools/barcodeqc.md)
+    (which writes `cleanTable.csv`: `mer`, `finalDownFract`) and correction in
+    [preprocessing](../epigenomics/preprocessing.md) / [RNAQC](../transcriptome/rnaqc.md)
+    via the `ds_table` input and `cleaning` toggle.
+
+    **See [CLEAN](../tools/clean.md) for the full algorithm, figures, and
+    worked examples.**
 
 <a id="fragments-file"></a>
 **fragments file**

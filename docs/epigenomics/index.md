@@ -16,7 +16,6 @@ flowchart LR
     PRE[ATX Epigenomic<br/>Preprocessing]:::process
     OPT[optimize ArchR or<br/>optimize snap]:::process
     IMP[ATX impute]:::process
-    CLN[clean]:::process
     FF[fragment fixer]:::process
     SEC[create ArchRProject<br/>or ATX snap]:::process
     PLOTS[ATX Epigenomics Plots]:::process
@@ -33,12 +32,11 @@ flowchart LR
 
     FASTQ -.-> BQC
     FASTQ --> PRE
-    BQC -. cleaning / x-talk input .-> PRE
+    BQC -. CLEAN / x-talk input .-> PRE
     PRE --> OPT
     IMG --> OPT
     OPT --> NC
     NC -- missing lanes --> IMP --> OPT
-    NC -- high lanes --> CLN --> OPT
     NC -- out-of-bounds --> FF --> OPT
     NC -- No --> SEC
     SEC --> PLOTS
@@ -62,7 +60,7 @@ flowchart LR
 1. **Preprocess.** Raw **FASTQ** goes through [ATX epigenomic
    preprocessing](preprocessing.md) to produce a fragments file. Optionally, run
    [BarcodeQC](../tools/barcodeqc.md) **first** — it generates the
-   [cleaning](../reference/glossary.md#cleaning) and
+   [CLEAN](../tools/clean.md) and
    [cross-talk correction](../reference/glossary.md#cross-talk-correction) tables
    that preprocessing then applies inline.
 2. **Optimize.** The fragments file plus the **spatial images** feed
@@ -70,8 +68,7 @@ flowchart LR
    which sweep parameters and produce the first **spatial maps** of the
    experiment.
 3. **Correct if needed.** The spatial maps reveal whether a run needs remediation
-   — [ATX impute](helpers/impute.md) for **missing lanes**,
-   [clean](helpers/clean.md) for **over-represented ("high") lanes**, or
+   — [ATX impute](helpers/impute.md) for **missing lanes**, or
    [fragment fixer](helpers/fragment-fixer.md) for **out-of-bounds** coordinates.
    After correction, re-optimize; once no correction is needed, proceed.
 4. **Secondary analysis.** [create ArchRProject](create-archrproject.md) or
@@ -86,12 +83,12 @@ flowchart LR
    [ATX CoPro Plots](../coprofiling/plots.md).
 
 !!! note "When do the correction steps run?"
-    The correction steps above (impute / clean / fragment fixer) only appear as a
+    The correction steps above (impute / fragment fixer) only appear as a
     **post-optimization loop when BarcodeQC is *not* run** — in that case,
     optimization is the first time you get spatial maps, which are what's needed
     to decide whether correction is required.
 
-    - If **BarcodeQC is run**, **cleaning** (and cross-talk correction) is applied
+    - If **BarcodeQC is run**, **[CLEAN](../tools/clean.md)** (and cross-talk correction) is applied
       during [preprocessing](preprocessing.md), so no post-optimization loop is
       needed for it.
     - **Fragment fixer** runs during preprocessing for new runs; only **older
@@ -114,7 +111,6 @@ Epigenomics-specific, single-step utilities:
   fragments file (e.g. Ultima runs).
 - [atx_convert](helpers/atx-convert.md) — convert between Seurat and H5AD.
 - [ATX impute](helpers/impute.md) — fill in missing lanes.
-- [clean](helpers/clean.md) — cleaning / cross-talk correction.
 - [fragment fixer](helpers/fragment-fixer.md) — screen alignment files for
   out-of-bounds coordinates.
 

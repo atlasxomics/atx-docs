@@ -88,7 +88,6 @@ nav:
       - Helper - cram2frags: epigenomics/helpers/cram2frags.md
       - Helper - atx_convert: epigenomics/helpers/atx-convert.md
       - Helper - ATX impute: epigenomics/helpers/impute.md
-      - Helper - clean: epigenomics/helpers/clean.md
       - Helper - fragment fixer: epigenomics/helpers/fragment-fixer.md
       - Advanced - compare clusters: epigenomics/compare-clusters.md
   - Whole Transcriptome:
@@ -108,6 +107,7 @@ nav:
   - Tools:
       - AtlasXBrowser: tools/atlasxbrowser.md
       - BarcodeQC: tools/barcodeqc.md
+      - CLEAN: tools/clean.md
       - DIY / Local Processing: tools/diy.md
   - Reference:
       - Glossary: reference/glossary.md

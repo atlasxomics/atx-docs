@@ -9,7 +9,7 @@ DBiT-seq, from raw reads through QC and secondary analysis.
 flowchart LR
     FASTQ["FASTQ"] --> PRE["RNAQC"]
     FASTQ -.-> BCQ["BarcodeQC"]
-    BCQ -. "cleaning / x-talk input" .-> PRE
+    BCQ -. "CLEAN / x-talk input" .-> PRE
     PRE --> OPT["optimize WT"]
     IMAGES["Input Images"] --> OPT
     OPT --> PLOTS["ATX WholeTxn Plots"] & FURTHER{"further<br>analysis?"}
@@ -45,7 +45,7 @@ flowchart LR
    alignment, a MultiQC report, and a FastQ-Screen contamination check —
    producing the per-run gene-expression matrix. As on the
    epigenomics path, you can optionally run [BarcodeQC](../tools/barcodeqc.md)
-   **first** to generate the [cleaning](../reference/glossary.md#cleaning) and
+   **first** to generate the [CLEAN](../tools/clean.md) and
    [cross-talk correction](../reference/glossary.md#cross-talk-correction) tables
    that QC then applies.
 2. **Optimize (secondary analysis).** The QC'd reads plus the **spatial images**
